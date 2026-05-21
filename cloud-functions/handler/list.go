@@ -39,7 +39,7 @@ func List(c *gin.Context) {
 		return
 	}
 
-	errno := parseErrno(JsonData["errno"])
+	errno := utils.ParseErrno(JsonData["errno"])
 	log.Printf("请求 Path->%s 返回状态码 errno->%d", dir, errno)
 
 	if errno == 0 {
@@ -83,14 +83,6 @@ func fetchReadmeContent(dlink, BDUSS string) string {
 	return string(content)
 }
 
-func parseErrno(v interface{}) int {
-	switch val := v.(type) {
-	case float64:
-		return int(val)
-	case string:
-		if i, err := strconv.Atoi(val); err == nil {
-			return i
-		}
 	}
 	return -1
 }

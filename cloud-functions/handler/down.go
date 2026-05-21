@@ -57,7 +57,7 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 		return
 	}
 
-	errno := parseErrno(JsonData["errno"])
+	errno := utils.ParseErrno(JsonData["errno"])
 	log.Printf("请求 Fid->%d 返回状态码 errno->%d", intfid, errno)
 
 	if errno != 0 {
@@ -167,7 +167,7 @@ func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink st
 		return
 	}
 
-	errno := parseErrno(JsonData2["errno"])
+	errno := utils.ParseErrno(JsonData2["errno"])
 	if errno != 0 {
 		log.Printf("获取下载地址失败")
 		result.Failed(c, errno, "获取下载地址失败")
@@ -193,14 +193,6 @@ func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink st
 }
 
 // parseErrno 解析 errno 字段，兼容 string 和 float64 类型
-func parseErrno(v interface{}) int {
-	switch val := v.(type) {
-	case float64:
-		return int(val)
-	case string:
-		if i, err := strconv.Atoi(val); err == nil {
-			return i
-		}
 	}
 	return -1
 }

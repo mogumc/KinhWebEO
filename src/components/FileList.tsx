@@ -12,6 +12,8 @@ import {
   Package,
   File,
   ChevronRight,
+  Archive,
+  AlignLeft,
 } from "lucide-react";
 
 interface FileListProps {
@@ -29,6 +31,8 @@ const iconMap: Record<FileCategory, React.ReactNode> = {
   app: <Package size={24} />,
   other: <File size={24} />,
   seed: <Package size={24} />,
+  archive: <Archive size={24} />,
+  text: <AlignLeft size={24} />,
 };
 
 export default function FileList({ files, loading, onOpen }: FileListProps) {

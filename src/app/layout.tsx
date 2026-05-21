@@ -16,6 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
+      <head>
+        <meta name="referrer" content="no-referrer" />
+      </head>
       <body>{children}</body>
     </html>
   );

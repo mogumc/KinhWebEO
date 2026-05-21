@@ -7,7 +7,7 @@ export function formatBytes(bytes: number): string {
 }
 
 // 百度网盘 category 值映射
-export type FileCategory = "video" | "music" | "image" | "doc" | "app" | "other" | "seed" | "folder";
+export type FileCategory = "video" | "music" | "image" | "doc" | "app" | "other" | "seed" | "folder" | "archive" | "text";
 
 export function getFileCategory(category: number): FileCategory {
   switch (category) {
@@ -38,31 +38,37 @@ export function getFileCategoryText(category: number): string {
 export function getFileCategoryByFilename(filename: string, isdir: number): FileCategory {
   if (isdir === 1) return "folder";
   const ext = filename.split(".").pop()?.toLowerCase() || "";
-  const imageExts = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
-  const videoExts = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"];
-  const audioExts = ["mp3", "wav", "flac", "aac", "ogg", "m4a"];
-  const docExts = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"];
-  const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2"];
+  const imageExts = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "ico", "tiff", "tif"];
+  const videoExts = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm", "mpg", "mpeg", "m4v", "3gp", "ts", "vob"];
+  const audioExts = ["mp3", "wav", "flac", "aac", "ogg", "m4a", "wma", "opus", "ape"];
+  const docExts = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"];
+  const textExts = ["txt", "md", "json", "xml", "yaml", "yml", "toml", "ini", "cfg", "conf", "log", "csv", "tsv", "html", "htm", "css", "js", "ts", "jsx", "tsx", "py", "go", "java", "c", "cpp", "h", "rs", "sh", "bat", "ps1", "sql", "php", "rb", "swift", "kt", "dart", "lua", "r", "perl", "pl", "pm"];
+  const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2", "xz", "zst", "lz4", "iso", "img", "dmg", "cab"];
+  const seedExts = ["torrent"];
+  const pandExts = ["pand"];
 
   if (imageExts.includes(ext)) return "image";
   if (videoExts.includes(ext)) return "video";
   if (audioExts.includes(ext)) return "music";
+  if (pandExts.includes(ext)) return "text";
+  if (textExts.includes(ext)) return "text";
   if (docExts.includes(ext)) return "doc";
-  if (archiveExts.includes(ext)) return "other";
+  if (archiveExts.includes(ext)) return "archive";
+  if (seedExts.includes(ext)) return "seed";
   return "other";
 }
 
 export function isImage(filename: string): boolean {
   const ext = filename.split(".").pop()?.toLowerCase() || "";
-  return ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext);
+  return ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "ico", "tiff", "tif"].includes(ext);
 }
 
 export function isVideo(filename: string): boolean {
   const ext = filename.split(".").pop()?.toLowerCase() || "";
-  return ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"].includes(ext);
+  return ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm", "mpg", "mpeg", "m4v", "3gp", "ts", "vob"].includes(ext);
 }
 
 export function isAudio(filename: string): boolean {
   const ext = filename.split(".").pop()?.toLowerCase() || "";
-  return ["mp3", "wav", "flac", "aac", "ogg", "m4a"].includes(ext);
+  return ["mp3", "wav", "flac", "aac", "ogg", "m4a", "wma", "opus", "ape"].includes(ext);
 }

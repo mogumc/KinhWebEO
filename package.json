@@ -9,17 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/dompurify": "^3.0.5",
+    "dompurify": "^3.4.5",
     "dplayer": "^1.27.1",
     "lucide-react": "^1.16.0",
+    "marked": "^18.0.4",
     "next": "^15.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-virtualized-auto-sizer": "^2.0.3",
+    "react-window": "^1.8.10"
   },
   "devDependencies": {
     "@types/dplayer": "^1.25.5",
+    "@types/marked": "^5.0.2",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/react-virtualized-auto-sizer": "^1.0.4",
+    "@types/react-window": "^1.8.8",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
     "typescript": "^5.0.0"

@@ -34,7 +34,7 @@ func main() {
 	r.GET("/api/list", handler.List)
 	r.GET("/api/down", handler.Down)
 	r.GET("/api/config", handler.GetConfig)
-	r.GET("/", handler.Index)
+	r.GET("/api/search", handler.Search)
 
 	addr := fmt.Sprintf("%s:%d", config.Cfg.System.Host, config.Cfg.System.Port)
 	log.Printf("KinhWebEO 启动成功 运行在: %s", addr)

@@ -60,6 +60,16 @@ func Head(url string, ua string, cookie string) http.Header {
 	return resp.Header
 }
 
+func GetWithResponse(url string, ua string, cookie string) (*http.Response, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", ua)
+	req.Header.Set("Cookie", cookie)
+	return client.Do(req)
+}
+
 func Post(url string, ua string, cookie string, data string) string {
 	req, err := http.NewRequest("POST", url, strings.NewReader(data))
 	if err != nil {

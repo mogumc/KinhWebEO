@@ -1,3 +1,8 @@
+
+<p align="center">
+  <img src="https://github.com/mogumc/Komari-MCP-Server/raw/main/logo.jpg" alt="KinhWeb" width="300"/>
+</p>
+
 # KinhWebEO
 
 百度网盘文件管理工具 - EdgeOne Serverless 版本

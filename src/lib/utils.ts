@@ -6,6 +6,35 @@ export function formatBytes(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
+// 百度网盘 category 值映射
+type FileCategory = "video" | "music" | "image" | "doc" | "app" | "other" | "seed";
+
+export function getFileCategory(category: number): FileCategory {
+  switch (category) {
+    case 1: return "video";
+    case 2: return "music";
+    case 3: return "image";
+    case 4: return "doc";
+    case 5: return "app";
+    case 6: return "other";
+    case 7: return "seed";
+    default: return "other";
+  }
+}
+
+export function getFileCategoryText(category: number): string {
+  switch (category) {
+    case 1: return "视频";
+    case 2: return "音乐";
+    case 3: return "图片";
+    case 4: return "文档";
+    case 5: return "应用";
+    case 6: return "其他";
+    case 7: return "种子";
+    default: return "未知类型";
+  }
+}
+
 export function getFileIcon(filename: string, isdir: number): string {
   if (isdir === 1) return "📁";
   const ext = filename.split(".").pop()?.toLowerCase() || "";
@@ -14,14 +43,12 @@ export function getFileIcon(filename: string, isdir: number): string {
   const audioExts = ["mp3", "wav", "flac", "aac", "ogg", "m4a"];
   const docExts = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"];
   const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2"];
-  const codeExts = ["js", "ts", "jsx", "tsx", "py", "go", "java", "c", "cpp", "rs", "php", "rb", "html", "css", "json", "yaml", "yml", "xml", "md"];
 
   if (imageExts.includes(ext)) return "🖼️";
   if (videoExts.includes(ext)) return "🎬";
   if (audioExts.includes(ext)) return "🎵";
   if (docExts.includes(ext)) return "📄";
   if (archiveExts.includes(ext)) return "📦";
-  if (codeExts.includes(ext)) return "💻";
   return "📄";
 }
 

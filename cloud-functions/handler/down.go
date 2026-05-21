@@ -47,7 +47,7 @@ func Down(c *gin.Context) {
 func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string) {
 	log.Printf("当前处于本地解析模式")
 	apipath := config.Cfg.User.ApiPath
-	apiUrl := apipath + "/api/filemetas?dlink=1&clienttype=17&rt=third&vip=2&fsids=[%22" + fid + "%22]"
+	apiUrl := apipath + "/api/filemetas?dlink=1&clienttype=0&rt=third&fsids=[%22" + fid + "%22]"
 	res := utils.Get(apiUrl, "netdisk;Mo", "BDUSS="+BDUSS+";PANPSC=;BAIDUID=1;ndut_fmt="+utils.Getndut())
 
 	var JsonData map[string]interface{}
@@ -86,7 +86,7 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 		return
 	}
 
-	dl := strings.Replace(strings.Replace(odlink, "d.pcs.baidu.com", "218.93.204.36/b/d.pcs.baidu.com", -1), "https", "http", -1) + "&clienttype=17&channel=0&version=7.22.0.8&" + utils.Getrand(BDUSS)
+	dl := strings.Replace(strings.Replace(odlink, "d.pcs.baidu.com", "218.93.204.36/b/d.pcs.baidu.com", -1), "https", "http", -1) + "&clienttype=0&channel=0&version=8.4.0.103&" + utils.Getrand(BDUSS)
 	headResult := utils.Head(dl, c.Request.Header.Get("User-Agent"), "")
 	dlink := ""
 	if headResult != nil {
@@ -96,7 +96,7 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	}
 
 	if dlink == "" {
-		dl = odlink + "&clienttype=17&channel=0&version=7.22.0.8&" + utils.Getrand(BDUSS)
+		dl = odlink + "&clienttype=0&channel=0&version=8.4.0.103&" + utils.Getrand(BDUSS)
 		headResult = utils.Head(dl, c.Request.Header.Get("User-Agent"), "")
 		if headResult != nil {
 			if loc := headResult.Get("Location"); loc != "" {

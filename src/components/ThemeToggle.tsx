@@ -6,8 +6,12 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // 初始化主题
-    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // 初始化主题：读取 localStorage，否则读取系统偏好
+    const savedTheme = localStorage.getItem("isDark");
+    const isDarkMode = savedTheme !== null 
+      ? savedTheme === "true" 
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    
     setIsDark(isDarkMode);
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
@@ -17,6 +21,7 @@ export default function ThemeToggle() {
   const toggleTheme = () => {
     const newTheme = !isDark;
     setIsDark(newTheme);
+    localStorage.setItem("isDark", String(newTheme));
     if (newTheme) {
       document.documentElement.classList.add("dark");
     } else {

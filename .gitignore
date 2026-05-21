@@ -4,7 +4,6 @@ out/
 .env
 .env.local
 .env.production
-cloud-functions/_config.yaml
 
 .vscode/
 .workbuddy/

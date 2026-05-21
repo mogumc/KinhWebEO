@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Sun, Moon } from "lucide-react";
 
 export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
@@ -37,16 +38,30 @@ export default function ThemeToggle() {
         top: "16px",
         right: "16px",
         zIndex: 9999,
-        padding: "8px 12px",
+        width: "40px",
+        height: "40px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         background: "var(--weui-BG-2)",
-        borderRadius: "20px",
+        borderRadius: "50%",
         cursor: "pointer",
-        fontSize: "14px",
         boxShadow: "var(--shadow)",
         border: "1px solid var(--weui-FG-3)",
       }}
     >
-      {isDark ? "🌞" : "🌙"}
+      <div style={{
+        width: "32px",
+        height: "32px",
+        borderRadius: "50%",
+        background: "var(--weui-FG-3)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "var(--weui-BG-0)"
+      }}>
+        {isDark ? <Sun size={16} /> : <Moon size={16} />}
+      </div>
     </div>
   );
 }

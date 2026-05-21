@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"kinhweb-eo/config"
-	"kinhweb-eo/handler"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,6 @@ func main() {
 	r.GET("/api/list", handler.List)
 	r.GET("/api/down", handler.Down)
 	r.GET("/api/config", handler.GetConfig)
-	r.GET("/", handler.Index)
 
 	addr := fmt.Sprintf("%s:%d", config.Cfg.System.Host, config.Cfg.System.Port)
 	log.Printf("KinhWebEO 启动成功 运行在: %s", addr)

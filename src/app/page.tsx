@@ -8,6 +8,8 @@ import Gallery from "@/components/Gallery";
 import Toast from "@/components/Toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import { fetchSiteConfig, fetchFileList, fetchDownloadLink, fetchSearch, FileEntry, SiteConfig } from "@/lib/api";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 import { isImage, isVideo, isAudio, getFileCategory, formatBytes } from "@/lib/utils";
 
 export default function Home() {
@@ -15,6 +17,7 @@ export default function Home() {
   const [currentDir, setCurrentDir] = useState("/");
   const [keyword, setKeyword] = useState("");
   const [files, setFiles] = useState<FileEntry[]>([]);
+  const [readme, setReadme] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; text: string; type?: "error" | "loading" }>({ show: false, text: "" });
 
@@ -46,6 +49,7 @@ export default function Home() {
     try {
       const data = key ? await fetchSearch(key, dir) : await fetchFileList(dir);
       setFiles(data.list || []);
+      setReadme(data.readme || "");
     } catch (err) {
       showToast(err instanceof Error ? err.message : "获取失败");
     } finally {
@@ -157,6 +161,17 @@ export default function Home() {
           }}
         />
       </div>
+
+      {readme && (
+        <div className="weui-panel" style={{ margin: "8px 16px", padding: "16px", background: "var(--weui-BG-2)" }}>
+          <div
+            className="markdown-body"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(marked.parse(readme) as string),
+            }}
+          />
+        </div>
+      )}
 
       {/* Main Container */}
       <div className="weui-panel" style={{ margin: "8px 0" }}>

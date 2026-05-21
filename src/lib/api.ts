@@ -25,6 +25,7 @@ export interface ApiResponse<T> {
 export interface ListResponse {
   dir: string;
   list: FileEntry[];
+  readme?: string;
 }
 
 export interface DownResponse {

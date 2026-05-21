@@ -14,7 +14,8 @@
     "marked": "^18.0.4",
     "next": "^15.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-virtualized-auto-sizer": "^2.0.3"
   },
   "devDependencies": {
     "@types/dplayer": "^1.25.5",

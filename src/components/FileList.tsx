@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { FileEntry } from "@/lib/api";
 import { formatBytes, getFileCategoryByFilename, FileCategory } from "@/lib/utils";
 import {
@@ -37,17 +38,6 @@ const iconMap: Record<FileCategory, React.ReactNode> = {
 };
 
 export default function FileList({ files, loading, onOpen }: FileListProps) {
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight - 200 });
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   if (loading) {
     return (
       <div style={{ padding: "40px 16px", textAlign: "center" }}>
@@ -82,7 +72,7 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
             e.preventDefault();
             onOpen(file);
           }}
-          style={{ cursor: "pointer", height: "100%", width: "100%", display: "flex", alignItems: "center" }}
+          style={{ cursor: "pointer", height: "100%", width: "100%", display: "flex", alignItems: "center", textDecoration: "none" }}
         >
           <div className={`weui-media-box__icon ${iconClass}`}>
             {icon}
@@ -104,15 +94,19 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
   };
 
   return (
-    <div style={{ height: "calc(100vh - 200px)" }}>
-      <List
-        height={windowSize.height}
-        itemCount={files.length}
-        itemSize={80}
-        width={windowSize.width}
-      >
-        {Row}
-      </List>
+    <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            height={height}
+            itemCount={files.length}
+            itemSize={80}
+            width={width}
+          >
+            {Row}
+          </List>
+        )}
+      </AutoSizer>
     </div>
   );
 }

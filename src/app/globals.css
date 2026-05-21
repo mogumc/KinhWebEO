@@ -1,4 +1,3 @@
-@import "tailwindcss";
 
 :root {
   --weui-BG-0: #ededed;
@@ -419,6 +418,8 @@ body {
 .icon-app { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-other { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-seed { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-archive { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-text { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 
 /* Scrollbar */
 ::-webkit-scrollbar {

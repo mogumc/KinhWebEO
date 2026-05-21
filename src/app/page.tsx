@@ -134,7 +134,7 @@ export default function Home() {
   const canPreview = selectedFileCategory === "video" || selectedFileCategory === "image";
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--weui-BG-1)" }}>
+    <div style={{ minHeight: "100vh", background: "var(--weui-BG-1)" }}>
       {/* Title */}
       <h2 className="weui-form__title">{siteConfig.title || "KinhWeb"}</h2>
 

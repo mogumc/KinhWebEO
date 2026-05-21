@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import DPlayer from "dplayer";
 
 interface GalleryProps {
   open: boolean;
@@ -13,7 +12,7 @@ interface GalleryProps {
 
 export default function Gallery({ open, url, type, filename, onClose }: GalleryProps) {
   const videoRef = useRef<HTMLDivElement>(null);
-  const dpRef = useRef<DPlayer | null>(null);
+  const dpRef = useRef<any>(null);
   const [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
     };
   }, [open, url, type]);
 
-  // 视频预览：DPlayer
+  // 视频预览：DPlayer（动态导入，避免 SSR 时访问 self）
   useEffect(() => {
     if (open && type === "video" && videoRef.current && url) {
       if (dpRef.current) {
@@ -56,13 +55,16 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
         dpRef.current = null;
       }
 
-      dpRef.current = new DPlayer({
-        container: videoRef.current,
-        autoplay: true,
-        video: {
-          url: url,
-          type: "auto",
-        },
+      import("dplayer").then(({ default: DPlayer }) => {
+        if (!videoRef.current) return;
+        dpRef.current = new DPlayer({
+          container: videoRef.current,
+          autoplay: true,
+          video: {
+            url: url,
+            type: "auto",
+          },
+        });
       });
     }
 

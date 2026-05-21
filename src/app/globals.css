@@ -42,6 +42,9 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -411,7 +414,7 @@ body {
 .icon-folder { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-image { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-video { background: var(--weui-FG-3); color: var(--weui-FG-1); }
-.icon-audio { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-music { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-doc { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-app { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-other { background: var(--weui-FG-3); color: var(--weui-FG-1); }

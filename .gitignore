@@ -8,4 +8,11 @@ out/
 .vscode/
 .workbuddy/
 .codebuddy/
+.edgeone/
 tsconfig.tsbuildinfo
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  

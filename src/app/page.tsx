@@ -116,14 +116,9 @@ export default function Home() {
       const url = data.dlink;
       const cat = getFileCategory(file.category);
 
-      if (cat === "image") {
+      if (cat === "image" || cat === "video" || cat === "music") {
         setGalleryUrl(url);
-        setGalleryType("image");
-        setGalleryFilename(file.server_filename);
-        setGalleryOpen(true);
-      } else if (cat === "video" || cat === "music") {
-        setGalleryUrl(url);
-        setGalleryType("video");
+        setGalleryType(cat === "image" ? "image" : "video");
         setGalleryFilename(file.server_filename);
         setGalleryOpen(true);
       } else {
@@ -134,6 +129,9 @@ export default function Home() {
     }
     setToast({ show: false, text: "" });
   };
+
+  const selectedFileCategory = selectedFile ? getFileCategory(selectedFile.category) : null;
+  const canPreview = selectedFileCategory === "video" || selectedFileCategory === "image";
 
   return (
     <div className="min-h-screen" style={{ background: "var(--weui-BG-1)" }}>
@@ -165,7 +163,7 @@ export default function Home() {
       <ActionSheet
         open={sheetOpen}
         filename={selectedFile?.server_filename || ""}
-        canPreview={selectedFile ? (getFileCategory(selectedFile.category) === "video" || getFileCategory(selectedFile.category) === "image") : false}
+        canPreview={canPreview}
         onClose={() => setSheetOpen(false)}
         onCopyLink={() => selectedFile && handleCopyLink(selectedFile)}
         onDownload={() => selectedFile && handleDownload(selectedFile)}

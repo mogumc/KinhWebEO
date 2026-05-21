@@ -12,6 +12,7 @@
 - 文件列表浏览
 - 文件下载（支持 302 重定向）
 - 图片/视频/音频在线预览
+- 文件搜索
 - 支持本地解析和远程解析两种模式
 - 移动端响应式设计
 
@@ -27,15 +28,19 @@
 KinhWebEO/
 ├── cloud-functions/          # Go 云函数后端
 │   ├── index.go              # 入口文件
-│   ├── handler/             # API 处理器
-│   ├── config/              # 配置管理
-│   ├── utils/               # 工具函数
-│   └── result/              # 响应格式
-├── src/                     # Next.js 前端
-│   ├── app/                 # 页面路由
-│   ├── components/          # React 组件
-│   └── lib/                 # API 封装和工具函数
-└── .edgeone/                # EdgeOne 配置
+│   ├── handler/              # API 处理器
+│   │   ├── config.go         # 配置接口
+│   │   ├── down.go           # 下载接口
+│   │   ├── list.go           # 文件列表
+│   │   └── search.go         # 搜索接口
+│   ├── config/               # 配置管理（环境变量）
+│   ├── utils/                # 工具函数
+│   └── result/               # 响应格式
+├── src/                      # Next.js 前端
+│   ├── app/                  # 页面路由
+│   ├── components/           # React 组件
+│   └── lib/                  # API 封装和工具函数
+└── .edgeone/                 # EdgeOne 配置（自动生成）
 ```
 
 ## 快速开始
@@ -46,7 +51,7 @@ KinhWebEO/
 
 ```bash
 cd cloud-functions
-go run index.go
+go run .
 ```
 
 2. 前端开发：
@@ -58,31 +63,9 @@ npm run dev
 
 ### 配置说明
 
-#### 配置文件
+配置通过环境变量管理
 
-创建 `cloud-functions/_config.yaml` 文件：
-
-```yaml
-system:
-  bind_port: 9000
-  bind_host: "0.0.0.0"
-  title: "KinhWeb"
-  foot: ""
-
-user:
-  bduss: "你的百度BDUSS"
-  is_vip: 0
-  acclink: ""
-  api_path: http://110.242.69.43
-```
-
-> **注意**：如果你通过源码部署到 EdgeOne 等 Serverless 平台，无论是否使用 `_config.yaml`，都应当存在这个文件。
-
-#### 环境变量
-
-环境变量优先级最高，可覆盖 `_config.yaml` 中的对应值。
-
-> **须知**: 对于 EdgeOne Port 9000是默认配置，非必要不建议自行修改。 
+> **须知**: 对于 EdgeOne Pages，端口 9000 是默认配置，非必要不建议自行修改。
 
 **后端环境变量**（云函数运行时）：
 
@@ -120,9 +103,9 @@ export IS_VIP=0
 
 ### EdgeOne 部署
 
-1. 后端部署为 EdgeOne 云函数
-2. 前端部署为 EdgeOne Pages
-3. 配置环境变量（BDUSS 等敏感信息）
+1. 将代码推送到 GitHub/GitLab
+2. 在 EdgeOne Pages 控制台导入仓库
+3. 点击部署
 
 ## API 接口
 
@@ -132,10 +115,22 @@ export IS_VIP=0
 GET /api/list?dir=/path/
 ```
 
+### 文件搜索
+
+```
+GET /api/search?key=关键词&dir=/path/
+```
+
 ### 文件下载
 
 ```
 GET /api/down?fid=123456&m=.baidu.com
+```
+
+### 站点配置
+
+```
+GET /api/config
 ```
 
 ## 许可证

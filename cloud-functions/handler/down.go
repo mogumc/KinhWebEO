@@ -48,7 +48,13 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	log.Printf("当前处于本地解析模式")
 	apipath := config.Cfg.User.ApiPath
 	apiUrl := apipath + "/api/filemetas?dlink=1&clienttype=0&rt=third&fsids=[%22" + fid + "%22]"
-	res := utils.Get(apiUrl, "netdisk;Mo", "BDUSS="+BDUSS+";PANPSC=;BAIDUID=1;ndut_fmt="+utils.Getndut())
+
+	stoken := utils.GetStoken(BDUSS)
+	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	if stoken != "" {
+		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	}
+	res := utils.Get(apiUrl, "netdisk;Mo", cookie)
 
 	var JsonData map[string]interface{}
 	if err := json.Unmarshal([]byte(res), &JsonData); err != nil {

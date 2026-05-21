@@ -30,9 +30,13 @@ func Search(c *gin.Context) {
 
 	// 构建百度搜索 API URL
 	apiUrl := config.Cfg.User.ApiPath + "/api/search?clienttype=0&app_id=250528&web=1&order=name&desc=0&num=100&page=1&recursion=1&key=" + url.QueryEscape(key)
-	
+
 	// 使用统一的 Cookie 策略
+	stoken := utils.GetStoken(BDUSS)
 	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	if stoken != "" {
+		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	}
 	res := utils.Get(apiUrl, "netdisk;Mo", cookie)
 
 	var JsonData map[string]interface{}

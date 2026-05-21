@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"kinhweb-eo/config"
 	"log"
 	"strconv"
 	"strings"
@@ -22,6 +23,32 @@ func Getndut() string {
 		ndut_fmt = strings.ToUpper(hex.EncodeToString(ndut))
 	}
 	return ndut_fmt
+}
+
+func GetStoken(bduss string) string {
+	apipath := config.Cfg.User.ApiPath
+	url := apipath + "/rest/2.0/xpan/file?method=plantcookie&type=stoken&source=pcs"
+	resp, err := GetWithResponse(url, "netdisk;Mo", "BDUSS="+bduss)
+	if err != nil {
+		log.Printf("GetStoken request failed: %v", err)
+		return ""
+	}
+	defer resp.Body.Close()
+
+	// 检查 Set-Cookie 响应头
+	cookies := resp.Header.Values("Set-Cookie")
+	for _, cookie := range cookies {
+		if strings.Contains(cookie, "STOKEN=") {
+			parts := strings.Split(cookie, ";")
+			for _, p := range parts {
+				p = strings.TrimSpace(p)
+				if strings.HasPrefix(p, "STOKEN=") {
+					return strings.TrimPrefix(p, "STOKEN=")
+				}
+			}
+		}
+	}
+	return ""
 }
 
 func Getrand(bduss string) string {

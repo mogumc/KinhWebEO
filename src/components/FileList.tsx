@@ -2,13 +2,34 @@
 
 import React from "react";
 import { FileEntry } from "@/lib/api";
-import { formatBytes, getFileIcon, getFileCategory } from "@/lib/utils";
+import { formatBytes, getFileCategoryByFilename, FileCategory } from "@/lib/utils";
+import {
+  Folder,
+  Image,
+  Film,
+  Music,
+  FileText,
+  Package,
+  File,
+  ChevronRight,
+} from "lucide-react";
 
 interface FileListProps {
   files: FileEntry[];
   loading: boolean;
   onOpen: (file: FileEntry) => void;
 }
+
+const iconMap: Record<FileCategory, React.ReactNode> = {
+  folder: <Folder size={24} />,
+  image: <Image size={24} />,
+  video: <Film size={24} />,
+  music: <Music size={24} />,
+  doc: <FileText size={24} />,
+  app: <Package size={24} />,
+  other: <File size={24} />,
+  seed: <Package size={24} />,
+};
 
 export default function FileList({ files, loading, onOpen }: FileListProps) {
   if (loading) {
@@ -33,9 +54,9 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
   return (
     <div>
       {files.map((file, index) => {
-        const cat = file.isdir === 1 ? "folder" : getFileCategory(file.category);
-        const icon = getFileIcon(file.server_filename, file.isdir);
+        const cat = getFileCategoryByFilename(file.server_filename, file.isdir);
         const iconClass = `icon-${cat}`;
+        const icon = iconMap[cat] || <File size={24} />;
 
         return (
           <div
@@ -64,7 +85,7 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
                 </div>
               </div>
               <div className="weui-media-box__ft">
-                {file.isdir === 1 ? "›" : "›"}
+                <ChevronRight size={16} color="var(--weui-FG-2)" />
               </div>
             </a>
           </div>

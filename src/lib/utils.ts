@@ -7,7 +7,7 @@ export function formatBytes(bytes: number): string {
 }
 
 // 百度网盘 category 值映射
-type FileCategory = "video" | "music" | "image" | "doc" | "app" | "other" | "seed";
+export type FileCategory = "video" | "music" | "image" | "doc" | "app" | "other" | "seed" | "folder";
 
 export function getFileCategory(category: number): FileCategory {
   switch (category) {
@@ -35,8 +35,8 @@ export function getFileCategoryText(category: number): string {
   }
 }
 
-export function getFileIcon(filename: string, isdir: number): string {
-  if (isdir === 1) return "📁";
+export function getFileCategoryByFilename(filename: string, isdir: number): FileCategory {
+  if (isdir === 1) return "folder";
   const ext = filename.split(".").pop()?.toLowerCase() || "";
   const imageExts = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
   const videoExts = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"];
@@ -44,12 +44,12 @@ export function getFileIcon(filename: string, isdir: number): string {
   const docExts = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"];
   const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2"];
 
-  if (imageExts.includes(ext)) return "🖼️";
-  if (videoExts.includes(ext)) return "🎬";
-  if (audioExts.includes(ext)) return "🎵";
-  if (docExts.includes(ext)) return "📄";
-  if (archiveExts.includes(ext)) return "📦";
-  return "📄";
+  if (imageExts.includes(ext)) return "image";
+  if (videoExts.includes(ext)) return "video";
+  if (audioExts.includes(ext)) return "music";
+  if (docExts.includes(ext)) return "doc";
+  if (archiveExts.includes(ext)) return "other";
+  return "other";
 }
 
 export function isImage(filename: string): boolean {

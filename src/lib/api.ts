@@ -32,7 +32,21 @@ export interface DownResponse {
   dlink: string;
 }
 
+export interface SiteConfig {
+  title: string;
+  foot: string;
+}
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
+
+export async function fetchSiteConfig(): Promise<SiteConfig> {
+  const res = await fetch(`${API_BASE}/api/config`);
+  const json: ApiResponse<SiteConfig> = await res.json();
+  if (json.code !== 200) {
+    throw new Error(json.message || "获取配置失败");
+  }
+  return json.data;
+}
 
 export async function fetchFileList(dir: string): Promise<ListResponse> {
   const res = await fetch(`${API_BASE}/api/list?dir=${encodeURIComponent(dir)}`);

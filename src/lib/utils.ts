@@ -14,12 +14,14 @@ export function getFileIcon(filename: string, isdir: number): string {
   const audioExts = ["mp3", "wav", "flac", "aac", "ogg", "m4a"];
   const docExts = ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt"];
   const archiveExts = ["zip", "rar", "7z", "tar", "gz", "bz2"];
+  const codeExts = ["js", "ts", "jsx", "tsx", "py", "go", "java", "c", "cpp", "rs", "php", "rb", "html", "css", "json", "yaml", "yml", "xml", "md"];
 
   if (imageExts.includes(ext)) return "🖼️";
   if (videoExts.includes(ext)) return "🎬";
   if (audioExts.includes(ext)) return "🎵";
   if (docExts.includes(ext)) return "📄";
   if (archiveExts.includes(ext)) return "📦";
+  if (codeExts.includes(ext)) return "💻";
   return "📄";
 }
 

@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/dompurify": "^3.0.5",
+    "dompurify": "^3.4.5",
     "dplayer": "^1.27.1",
     "lucide-react": "^1.16.0",
     "marked": "^18.0.4",

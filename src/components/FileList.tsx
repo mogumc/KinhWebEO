@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FileEntry } from "@/lib/api";
@@ -37,6 +37,45 @@ const iconMap: Record<FileCategory, React.ReactNode> = {
   text: <AlignLeft size={24} />,
 };
 
+const Row = memo(({ data, index, style }: { data: { files: FileEntry[], onOpen: (f: FileEntry) => void }, index: number; style: React.CSSProperties }) => {
+  const file = data.files[index];
+  const onOpen = data.onOpen;
+  const cat = getFileCategoryByFilename(file.server_filename, file.isdir);
+  const iconClass = `icon-${cat}`;
+  const icon = iconMap[cat] || <File size={24} />;
+
+  return (
+    <div style={style} className="animate-fadeIn">
+      <a
+        href="javascript:void(0)"
+        className="weui-media-box weui-media-box_appmsg"
+        onClick={(e) => {
+          e.preventDefault();
+          onOpen(file);
+        }}
+        style={{ cursor: "pointer", height: "100%", width: "100%", display: "flex", alignItems: "center", textDecoration: "none" }}
+      >
+        <div className={`weui-media-box__icon ${iconClass}`}>
+          {icon}
+        </div>
+        <div className="weui-media-box__text">
+          <div className="weui-media-box__title">{file.server_filename}</div>
+          <div className="weui-media-box__desc">
+            {file.isdir === 1 ? "文件夹" : (
+              <span>{formatBytes(file.size)}</span>
+            )}
+          </div>
+        </div>
+        <div className="weui-media-box__ft">
+          <ChevronRight size={16} color="var(--weui-FG-2)" />
+        </div>
+      </a>
+    </div>
+  );
+});
+
+Row.displayName = 'Row';
+
 export default function FileList({ files, loading, onOpen }: FileListProps) {
   if (loading) {
     return (
@@ -57,42 +96,6 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
     );
   }
 
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const file = files[index];
-    const cat = getFileCategoryByFilename(file.server_filename, file.isdir);
-    const iconClass = `icon-${cat}`;
-    const icon = iconMap[cat] || <File size={24} />;
-
-    return (
-      <div style={style} className="animate-fadeIn">
-        <a
-          href="javascript:void(0)"
-          className="weui-media-box weui-media-box_appmsg"
-          onClick={(e) => {
-            e.preventDefault();
-            onOpen(file);
-          }}
-          style={{ cursor: "pointer", height: "100%", width: "100%", display: "flex", alignItems: "center", textDecoration: "none" }}
-        >
-          <div className={`weui-media-box__icon ${iconClass}`}>
-            {icon}
-          </div>
-          <div className="weui-media-box__text">
-            <div className="weui-media-box__title">{file.server_filename}</div>
-            <div className="weui-media-box__desc">
-              {file.isdir === 1 ? "文件夹" : (
-                <span>{formatBytes(file.size)}</span>
-              )}
-            </div>
-          </div>
-          <div className="weui-media-box__ft">
-            <ChevronRight size={16} color="var(--weui-FG-2)" />
-          </div>
-        </a>
-      </div>
-    );
-  };
-
   return (
     <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
       <AutoSizer>
@@ -102,6 +105,7 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
             itemCount={files.length}
             itemSize={80}
             width={width}
+            itemData={{ files, onOpen }}
           >
             {Row}
           </List>

@@ -21,7 +21,7 @@
 ```
 KinhWebEO/
 ├── cloud-functions/          # Go 云函数后端
-│   ├── main.go              # 入口文件
+│   ├── index.go              # 入口文件
 │   ├── handler/             # API 处理器
 │   ├── config/              # 配置管理
 │   ├── utils/               # 工具函数
@@ -41,7 +41,7 @@ KinhWebEO/
 
 ```bash
 cd cloud-functions
-go run main.go
+go run index.go
 ```
 
 2. 前端开发：
@@ -68,8 +68,9 @@ user:
   acclink: ""
   api_path: http://110.242.69.43
 ```
+注意: 如果你通过源码部署到EdgeOne等Serverless平台，无论是否使用_config.yaml，都应当存在这个文件。
 
-或使用环境变量：
+环境变量可覆盖配置文件中的值：
 
 ```bash
 export BDUSS="你的百度BDUSS"

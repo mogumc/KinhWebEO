@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/mogumc/KinhWebEO/raw/main/logo.jpg" alt="KinhWeb" width="300"/>
+  <img src="./logo.jpg" alt="KinhWeb" width="300"/>
 </p>
 
 # KinhWebEO

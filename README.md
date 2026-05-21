@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/mogumc/Komari-MCP-Server/raw/main/logo.jpg" alt="KinhWeb" width="300"/>
+  <img src="https://github.com/mogumc/KinhWebEO/raw/main/logo.jpg" alt="KinhWeb" width="300"/>
 </p>
 
 # KinhWebEO
@@ -58,6 +58,8 @@ npm run dev
 
 ### 配置说明
 
+#### 配置文件
+
 创建 `cloud-functions/_config.yaml` 文件：
 
 ```yaml
@@ -73,14 +75,47 @@ user:
   acclink: ""
   api_path: http://110.242.69.43
 ```
-注意: 如果你通过源码部署到EdgeOne等Serverless平台，无论是否使用_config.yaml，都应当存在这个文件。
 
-环境变量可覆盖配置文件中的值：
+> **注意**：如果你通过源码部署到 EdgeOne 等 Serverless 平台，无论是否使用 `_config.yaml`，都应当存在这个文件。
+
+#### 环境变量
+
+环境变量优先级最高，可覆盖 `_config.yaml` 中的对应值。
+
+> **须知**: 对于 EdgeOne Port 9000是默认配置，非必要不建议自行修改。 
+
+**后端环境变量**（云函数运行时）：
+
+| 变量名 | 说明 | 默认值 | 是否必填 |
+|:---|:---|:---|:---|
+| `BDUSS` | 百度账号的 BDUSS Cookie，用于鉴权访问百度网盘 API | `""` | ✅ 必填 |
+| `IS_VIP` | 百度网盘会员类型：`0` = 非会员，`1` = 普通会员，`2` = 超级会员 | `0` | 否 |
+| `ACCLINK` | 加速链接，留空则使用官方 API 地址 | `""` | 否 |
+| `API_PATH` | 百度网盘 API 地址，使用自建代理时修改 | `http://110.242.69.43` | 否 |
+| `TITLE` | 站点标题，显示在页面顶部 | `KinhWeb` | 否 |
+| `FOOT` | 页脚文字，显示在页面底部 | `""` | 否 |
+| `PORT` | 后端服务监听端口 | `9000` | 否 |
+| `HOST` | 后端服务监听地址 | `0.0.0.0` | 否 |
+
+**前端环境变量**（Next.js 构建时）：
+
+| 变量名 | 说明 | 默认值 | 是否必填 |
+|:---|:---|:---|:---|
+| `NEXT_PUBLIC_API_BASE` | 后端 API 地址，前端通过此地址请求后端接口。留空则自动使用当前域名 | `""`（同源） | 否 |
+
+> **提示**：`NEXT_PUBLIC_` 前缀的变量会在 Next.js 构建时注入到前端代码中，因此需要在 `npm run build` 之前设置。
+
+#### 环境变量配置示例
 
 ```bash
+# 后端环境变量
 export BDUSS="你的百度BDUSS"
 export TITLE="KinhWeb"
 export API_PATH="http://110.242.69.43"
+export IS_VIP=0
+
+# 前端环境变量
+# export NEXT_PUBLIC_API_BASE="http://localhost:9000"
 ```
 
 ### EdgeOne 部署

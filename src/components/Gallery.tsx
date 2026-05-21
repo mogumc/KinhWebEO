@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface GalleryProps {
   open: boolean;
@@ -11,10 +12,10 @@ interface GalleryProps {
 }
 
 export default function Gallery({ open, url, type, filename, onClose }: GalleryProps) {
+  const router = useRouter();
   const videoRef = useRef<HTMLDivElement>(null);
   const dpRef = useRef<any>(null);
-  const blobUrlRef = useRef("");
-  const [imgSrc, setImgSrc] = useState("");
+  const [showOpr, setShowOpr] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -27,31 +28,6 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
     };
   }, [open]);
 
-  // 图片预览：通过 fetch 获取 blob URL，隐藏 Referer
-  useEffect(() => {
-    if (open && type === "image" && url) {
-      fetch(url, { headers: { Referer: "" } })
-        .then((res) => res.blob())
-        .then((blob) => {
-          const blobUrl = URL.createObjectURL(blob);
-          blobUrlRef.current = blobUrl;
-          setImgSrc(blobUrl);
-        })
-        .catch(() => {
-          blobUrlRef.current = url;
-          setImgSrc(url);
-        });
-    }
-
-    return () => {
-      if (blobUrlRef.current.startsWith("blob:")) {
-        URL.revokeObjectURL(blobUrlRef.current);
-        blobUrlRef.current = "";
-      }
-    };
-  }, [open, url, type]);
-
-  // 视频预览：DPlayer（动态导入，避免 SSR 时访问 self）
   useEffect(() => {
     if (open && type === "video" && videoRef.current && url) {
       if (dpRef.current) {
@@ -80,14 +56,39 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
     };
   }, [open, url, type]);
 
+  const handleOpenNewWindow = () => {
+    const playerUrl = `/player?url=${encodeURIComponent(url)}&type=${type}`;
+    window.open(playerUrl, "_blank");
+    onClose();
+  };
+
   if (!open) return null;
 
+  const btnStyle: React.CSSProperties = {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "44px",
+    height: "44px",
+    borderRadius: "50%",
+    background: "rgba(0,0,0,0.3)",
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    fontSize: "14px",
+    opacity: showOpr ? 1 : 0,
+    transition: "opacity 0.3s",
+    zIndex: 6001,
+  };
+
   return (
-    <div className="weui-gallery">
-      {type === "image" && imgSrc && (
+    <div className="weui-gallery" onMouseEnter={() => setShowOpr(true)} onMouseLeave={() => setShowOpr(false)}>
+      {type === "image" && (
         <div
           className="weui-gallery__img"
-          style={{ backgroundImage: `url(${imgSrc})` }}
+          style={{ backgroundImage: `url(${url})` }}
         />
       )}
       {type === "video" && (
@@ -95,20 +96,9 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
           <div ref={videoRef} style={{ width: "100%", height: "100%" }} />
         </div>
       )}
-      <div className="weui-gallery__opr">
-        <div className="weui-gallery__delete" onClick={onClose}>
-          关闭
-        </div>
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="weui-gallery__delete"
-          style={{ color: "#fff" }}
-        >
-          在新窗口打开
-        </a>
-      </div>
+      
+      <div style={{ ...btnStyle, left: "10px" }} onClick={onClose}>关</div>
+      <div style={{ ...btnStyle, right: "10px" }} onClick={handleOpenNewWindow}>开</div>
     </div>
   );
 }

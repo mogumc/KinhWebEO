@@ -16,7 +16,7 @@ export interface FileEntry {
   };
 }
 
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T> {
   code: number;
   message: string;
   data: T;
@@ -39,22 +39,40 @@ export interface SiteConfig {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "";
 
-export async function fetchSiteConfig(): Promise<SiteConfig> {
-  const res = await fetch(`${API_BASE}/api/config`);
-  const json: ApiResponse<SiteConfig> = await res.json();
-  if (json.code !== 200) {
-    throw new Error(json.message || "获取配置失败");
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 10000); // 10秒超时
+
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, { 
+      ...options, 
+      signal: controller.signal 
+    });
+    clearTimeout(id);
+
+    if (!res.ok) {
+      throw new Error(`请求失败: ${res.status} ${res.statusText}`);
+    }
+    
+    const json: ApiResponse<T> = await res.json();
+    if (json.code !== 200) {
+      throw new Error(json.message || "请求业务失败");
+    }
+    return json.data;
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error("请求超时");
+    }
+    throw err;
   }
-  return json.data;
+}
+
+export async function fetchSiteConfig(): Promise<SiteConfig> {
+  return request<SiteConfig>("/api/config");
 }
 
 export async function fetchFileList(dir: string): Promise<ListResponse> {
-  const res = await fetch(`${API_BASE}/api/list?dir=${encodeURIComponent(dir)}`);
-  const json: ApiResponse<ListResponse> = await res.json();
-  if (json.code !== 200) {
-    throw new Error(json.message || "获取文件列表失败");
-  }
-  return json.data;
+  return request<ListResponse>(`/api/list?dir=${encodeURIComponent(dir)}`);
 }
 
 export async function fetchDownloadLink(
@@ -63,10 +81,5 @@ export async function fetchDownloadLink(
 ): Promise<DownResponse> {
   const params = new URLSearchParams({ fid: String(fid) });
   if (mode) params.set("m", mode);
-  const res = await fetch(`${API_BASE}/api/down?${params.toString()}`);
-  const json: ApiResponse<DownResponse> = await res.json();
-  if (json.code !== 200) {
-    throw new Error(json.message || "获取下载链接失败");
-  }
-  return json.data;
+  return request<DownResponse>(`/api/down?${params.toString()}`);
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"kinhweb-eo/config"
 	"kinhweb-eo/handler"
@@ -9,9 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:embed _config.yaml
+var configFile []byte
+
 func main() {
 	config.Init()
-	config.LoadFromFile("./_config.yaml")
+	config.LoadFromBytes(configFile)
 
 	r := gin.Default()
 

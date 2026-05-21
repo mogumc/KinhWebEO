@@ -61,17 +61,23 @@ func Init() {
 	}
 }
 
+// LoadFromBytes 从 []byte 解析 YAML 并合并到当前配置
+// 优先级：环境变量 > YAML 文件值 > 默认值
+func LoadFromBytes(data []byte) {
+	var fileCfg Config
+	if err := yaml.Unmarshal(data, &fileCfg); err != nil {
+		return
+	}
+	mergeConfig(Cfg, &fileCfg)
+}
+
+// LoadFromFile 从文件路径读取 YAML 并合并（本地开发用）
 func LoadFromFile(path string) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return
 	}
-	var fileCfg Config
-	if err := yaml.Unmarshal(data, &fileCfg); err != nil {
-		return
-	}
-	// 合并配置：非零值覆盖默认值
-	mergeConfig(Cfg, &fileCfg)
+	LoadFromBytes(data)
 }
 
 // mergeConfig 合并配置，非零值覆盖目标值

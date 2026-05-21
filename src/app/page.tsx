@@ -151,7 +151,7 @@ export default function Home() {
       <div className="weui-footer">
         {siteConfig.foot && <div className="weui-footer__text">{siteConfig.foot}</div>}
         <div className="weui-footer__text">
-          Copyright &copy; 2019-2025 Powered By KinhWeb with WeUI
+          Copyright &copy; 2019-2026 Powered By KinhWeb with WeUI
         </div>
       </div>
 

@@ -2,7 +2,7 @@
 
 import React, { memo } from "react";
 import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
+import { AutoSizer } from "react-virtualized-auto-sizer";
 import { FileEntry } from "@/lib/api";
 import { formatBytes, getFileCategoryByFilename, FileCategory } from "@/lib/utils";
 import {
@@ -96,21 +96,21 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
     );
   }
 
+  const renderList = (size: { height: number | undefined; width: number | undefined }) => (
+    <List
+      height={size.height ?? 0}
+      itemCount={files.length}
+      itemSize={80}
+      width={size.width ?? 0}
+      itemData={{ files, onOpen }}
+    >
+      {Row as any}
+    </List>
+  );
+
   return (
     <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
-      <AutoSizer>
-        {({ height, width }) => (
-          <List
-            height={height}
-            itemCount={files.length}
-            itemSize={80}
-            width={width}
-            itemData={{ files, onOpen }}
-          >
-            {Row}
-          </List>
-        )}
-      </AutoSizer>
+      <AutoSizer renderProp={renderList} />
     </div>
   );
 }

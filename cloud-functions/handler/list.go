@@ -7,6 +7,7 @@ import (
 	"kinhweb-eo/utils"
 	"log"
 	"net/url"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,7 +27,8 @@ func List(c *gin.Context) {
 	}
 
 	apiUrl := config.Cfg.User.ApiPath + "/api/list?order=time&dir=" + url.QueryEscape(dir)
-	res := utils.Get(apiUrl, "netdisk;Mo", "BDUSS="+BDUSS)
+	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	res := utils.Get(apiUrl, "netdisk;Mo", cookie)
 
 	var JsonData map[string]interface{}
 	if err := json.Unmarshal([]byte(res), &JsonData); err != nil {
@@ -50,4 +52,17 @@ func List(c *gin.Context) {
 	} else {
 		result.Failed(c, errno, "文件列表为空")
 	}
+}
+
+// parseErrno 解析 errno 字段，兼容 string 和 float64 类型
+func parseErrno(v interface{}) int {
+	switch val := v.(type) {
+	case float64:
+		return int(val)
+	case string:
+		if i, err := strconv.Atoi(val); err == nil {
+			return i
+		}
+	}
+	return -1
 }

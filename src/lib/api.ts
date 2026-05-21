@@ -75,6 +75,10 @@ export async function fetchFileList(dir: string): Promise<ListResponse> {
   return request<ListResponse>(`/api/list?dir=${encodeURIComponent(dir)}`);
 }
 
+export async function fetchSearch(key: string, dir: string = "/"): Promise<ListResponse> {
+  return request<ListResponse>(`/api/search?key=${encodeURIComponent(key)}&dir=${encodeURIComponent(dir)}`);
+}
+
 export async function fetchDownloadLink(
   fid: number,
   mode?: string

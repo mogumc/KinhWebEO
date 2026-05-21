@@ -6,12 +6,13 @@ import FileList from "@/components/FileList";
 import ActionSheet from "@/components/ActionSheet";
 import Gallery from "@/components/Gallery";
 import Toast from "@/components/Toast";
-import { fetchSiteConfig, fetchFileList, fetchDownloadLink, FileEntry, SiteConfig } from "@/lib/api";
+import { fetchSiteConfig, fetchFileList, fetchDownloadLink, fetchSearch, FileEntry, SiteConfig } from "@/lib/api";
 import { isImage, isVideo, isAudio, getFileCategory, formatBytes } from "@/lib/utils";
 
 export default function Home() {
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({ title: "KinhWeb", foot: "" });
   const [currentDir, setCurrentDir] = useState("/");
+  const [keyword, setKeyword] = useState("");
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; text: string; type?: "error" | "loading" }>({ show: false, text: "" });
@@ -38,11 +39,11 @@ export default function Home() {
     fetchSiteConfig().then(setSiteConfig).catch(() => {});
   }, []);
 
-  const loadFiles = useCallback(async (dir: string) => {
+  const loadFiles = useCallback(async (dir: string, key?: string) => {
     setLoading(true);
-    showToast("获取文件列表中", "loading");
+    showToast(key ? "搜索中" : "获取文件列表中", "loading");
     try {
-      const data = await fetchFileList(dir);
+      const data = key ? await fetchSearch(key, dir) : await fetchFileList(dir);
       setFiles(data.list || []);
     } catch (err) {
       showToast(err instanceof Error ? err.message : "获取失败");
@@ -53,8 +54,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    loadFiles(currentDir);
-  }, [currentDir, loadFiles]);
+    loadFiles(currentDir, keyword);
+  }, [currentDir, keyword, loadFiles]);
 
   useEffect(() => {
     document.title = siteConfig.title || "KinhWeb";
@@ -137,6 +138,23 @@ export default function Home() {
     <div style={{ minHeight: "100vh", background: "var(--weui-BG-1)" }}>
       {/* Title */}
       <h2 className="weui-form__title">{siteConfig.title || "KinhWeb"}</h2>
+
+      {/* Search Bar */}
+      <div style={{ padding: "0 16px 8px" }}>
+        <input
+          type="text"
+          placeholder="搜索文件..."
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid var(--weui-FG-3)",
+            background: "var(--weui-BG-2)",
+          }}
+        />
+      </div>
 
       {/* Main Container */}
       <div className="weui-panel" style={{ margin: "8px 0" }}>

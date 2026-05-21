@@ -13,6 +13,7 @@ interface GalleryProps {
 export default function Gallery({ open, url, type, filename, onClose }: GalleryProps) {
   const videoRef = useRef<HTMLDivElement>(null);
   const dpRef = useRef<any>(null);
+  const blobUrlRef = useRef("");
   const [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
@@ -33,16 +34,19 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
         .then((res) => res.blob())
         .then((blob) => {
           const blobUrl = URL.createObjectURL(blob);
+          blobUrlRef.current = blobUrl;
           setImgSrc(blobUrl);
         })
         .catch(() => {
+          blobUrlRef.current = url;
           setImgSrc(url);
         });
     }
 
     return () => {
-      if (imgSrc && imgSrc.startsWith("blob:")) {
-        URL.revokeObjectURL(imgSrc);
+      if (blobUrlRef.current.startsWith("blob:")) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = "";
       }
     };
   }, [open, url, type]);

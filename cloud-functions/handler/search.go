@@ -42,7 +42,7 @@ func Search(c *gin.Context) {
 		return
 	}
 
-	errno := parseErrno(JsonData["errno"])
+	errno := utils.ParseErrno(JsonData["errno"])
 	if errno == 0 {
 		lists, ok := JsonData["list"].([]interface{})
 		if !ok {

@@ -86,7 +86,8 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 		return
 	}
 
-	dl := strings.Replace(strings.Replace(odlink, "d.pcs.baidu.com", "218.93.204.36/b/d.pcs.baidu.com", -1), "https", "http", -1) + "&clienttype=0&channel=0&version=8.4.0.103&" + utils.Getrand(BDUSS)
+	rand := utils.Getrand(BDUSS)
+	dl := strings.Replace(strings.Replace(odlink, "d.pcs.baidu.com", "218.93.204.36/b/d.pcs.baidu.com", -1), "https", "http", -1) + "&clienttype=0&channel=0&version=8.4.0.103&" + rand
 	headResult := utils.Head(dl, c.Request.Header.Get("User-Agent"), "")
 	dlink := ""
 	if headResult != nil {
@@ -96,7 +97,7 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	}
 
 	if dlink == "" {
-		dl = odlink + "&clienttype=0&channel=0&version=8.4.0.103&" + utils.Getrand(BDUSS)
+		dl = odlink + "&clienttype=0&channel=0&version=8.4.0.103&" + rand
 		headResult = utils.Head(dl, c.Request.Header.Get("User-Agent"), "")
 		if headResult != nil {
 			if loc := headResult.Get("Location"); loc != "" {
@@ -190,9 +191,4 @@ func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink st
 
 	data := gin.H{"fid": intfid, "dlink": dlink}
 	result.Success(c, data)
-}
-
-// parseErrno 解析 errno 字段，兼容 string 和 float64 类型
-	}
-	return -1
 }

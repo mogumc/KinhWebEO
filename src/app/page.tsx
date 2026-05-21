@@ -7,10 +7,10 @@ import ActionSheet from "@/components/ActionSheet";
 import Gallery from "@/components/Gallery";
 import Toast from "@/components/Toast";
 import ThemeToggle from "@/components/ThemeToggle";
+import { getFileCategory, formatBytes } from "@/lib/utils";
 import { fetchSiteConfig, fetchFileList, fetchDownloadLink, fetchSearch, FileEntry, SiteConfig } from "@/lib/api";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import { isImage, isVideo, isAudio, getFileCategory, formatBytes } from "@/lib/utils";
 
 export default function Home() {
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({ title: "KinhWeb", foot: "" });
@@ -132,8 +132,9 @@ export default function Home() {
       }
     } catch {
       showToast("获取预览链接失败");
+    } finally {
+        setToast({ show: false, text: "" });
     }
-    setToast({ show: false, text: "" });
   };
 
   const selectedFileCategory = selectedFile ? getFileCategory(selectedFile.category) : null;

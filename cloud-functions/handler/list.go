@@ -8,7 +8,6 @@ import (
 	"kinhweb-eo/utils"
 	"log"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -81,8 +80,4 @@ func fetchReadmeContent(dlink, BDUSS string) string {
 		return string(content[:1024*50]) + "\n...(内容过长已截断)"
 	}
 	return string(content)
-}
-
-	}
-	return -1
 }

@@ -97,7 +97,13 @@ export default function Home() {
   const handleDownload = (file: FileEntry) => {
     setSheetOpen(false);
     const url = getDownloadUrl(file.fs_id);
-    window.open(url);
+    const a = document.createElement("a");
+    a.href = url;
+    a.rel = "noreferrer";
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     showToast("获取下载地址成功");
   };
 
@@ -159,7 +165,7 @@ export default function Home() {
       <ActionSheet
         open={sheetOpen}
         filename={selectedFile?.server_filename || ""}
-        isVideo={selectedFile ? getFileCategory(selectedFile.category) === "video" : false}
+        canPreview={selectedFile ? (getFileCategory(selectedFile.category) === "video" || getFileCategory(selectedFile.category) === "image") : false}
         onClose={() => setSheetOpen(false)}
         onCopyLink={() => selectedFile && handleCopyLink(selectedFile)}
         onDownload={() => selectedFile && handleDownload(selectedFile)}

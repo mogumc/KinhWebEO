@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 interface ActionSheetProps {
   open: boolean;
   filename: string;
-  isVideo: boolean;
+  canPreview: boolean;
   onClose: () => void;
   onCopyLink: () => void;
   onDownload: () => void;
@@ -15,7 +15,7 @@ interface ActionSheetProps {
 export default function ActionSheet({
   open,
   filename,
-  isVideo,
+  canPreview,
   onClose,
   onCopyLink,
   onDownload,
@@ -49,7 +49,7 @@ export default function ActionSheet({
         <div className="weui-actionsheet__cell" onClick={onDownload}>
           直接下载
         </div>
-        {isVideo && (
+        {canPreview && (
           <div className="weui-actionsheet__cell" onClick={onPreview}>
             预览文件
           </div>

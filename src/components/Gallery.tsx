@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import DPlayer from "dplayer";
 
 interface GalleryProps {
   open: boolean;
@@ -11,7 +12,9 @@ interface GalleryProps {
 }
 
 export default function Gallery({ open, url, type, filename, onClose }: GalleryProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const dpRef = useRef<DPlayer | null>(null);
+  const [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -24,33 +27,66 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
     };
   }, [open]);
 
+  // 图片预览：通过 fetch 获取 blob URL，隐藏 Referer
   useEffect(() => {
-    if (open && videoRef.current) {
-      videoRef.current.play().catch(() => {});
+    if (open && type === "image" && url) {
+      fetch(url, { headers: { Referer: "" } })
+        .then((res) => res.blob())
+        .then((blob) => {
+          const blobUrl = URL.createObjectURL(blob);
+          setImgSrc(blobUrl);
+        })
+        .catch(() => {
+          setImgSrc(url);
+        });
     }
-  }, [open, url]);
+
+    return () => {
+      if (imgSrc && imgSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(imgSrc);
+      }
+    };
+  }, [open, url, type]);
+
+  // 视频预览：DPlayer
+  useEffect(() => {
+    if (open && type === "video" && videoRef.current && url) {
+      if (dpRef.current) {
+        dpRef.current.destroy();
+        dpRef.current = null;
+      }
+
+      dpRef.current = new DPlayer({
+        container: videoRef.current,
+        autoplay: true,
+        video: {
+          url: url,
+          type: "auto",
+        },
+      });
+    }
+
+    return () => {
+      if (dpRef.current) {
+        dpRef.current.destroy();
+        dpRef.current = null;
+      }
+    };
+  }, [open, url, type]);
 
   if (!open) return null;
 
   return (
     <div className="weui-gallery">
-      {type === "image" && (
+      {type === "image" && imgSrc && (
         <div
           className="weui-gallery__img"
-          style={{ backgroundImage: `url(${url})` }}
+          style={{ backgroundImage: `url(${imgSrc})` }}
         />
       )}
       {type === "video" && (
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
-          <video
-            ref={videoRef}
-            src={url}
-            controls
-            autoPlay
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
-          >
-            您的浏览器不支持视频播放
-          </video>
+          <div ref={videoRef} style={{ width: "100%", height: "100%" }} />
         </div>
       )}
       <div className="weui-gallery__opr">

@@ -6,6 +6,7 @@ import FileList from "@/components/FileList";
 import ActionSheet from "@/components/ActionSheet";
 import Gallery from "@/components/Gallery";
 import Toast from "@/components/Toast";
+import ThemeToggle from "@/components/ThemeToggle";
 import { fetchSiteConfig, fetchFileList, fetchDownloadLink, fetchSearch, FileEntry, SiteConfig } from "@/lib/api";
 import { isImage, isVideo, isAudio, getFileCategory, formatBytes } from "@/lib/utils";
 
@@ -136,6 +137,7 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--weui-BG-1)" }}>
+      <ThemeToggle />
       {/* Title */}
       <h2 className="weui-form__title">{siteConfig.title || "KinhWeb"}</h2>
 

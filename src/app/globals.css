@@ -1,4 +1,3 @@
-
 :root {
   --weui-BG-0: #ededed;
   --weui-BG-1: #f7f7f7;
@@ -18,19 +17,17 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --weui-BG-0: #111;
-    --weui-BG-1: #1a1a1a;
-    --weui-BG-2: #222;
-    --weui-FG-0: rgba(255, 255, 255, 0.85);
-    --weui-FG-1: rgba(255, 255, 255, 0.6);
-    --weui-FG-2: rgba(255, 255, 255, 0.35);
-    --weui-FG-3: rgba(255, 255, 255, 0.15);
-    --weui-BRAND: #07c160;
-    --weui-BRAND-LIGHT: #95ec69;
-    --weui-BG-MASK: rgba(0, 0, 0, 0.75);
-  }
+.dark {
+  --weui-BG-0: #111;
+  --weui-BG-1: #1a1a1a;
+  --weui-BG-2: #222;
+  --weui-FG-0: rgba(255, 255, 255, 0.85);
+  --weui-FG-1: rgba(255, 255, 255, 0.6);
+  --weui-FG-2: rgba(255, 255, 255, 0.35);
+  --weui-FG-3: rgba(255, 255, 255, 0.15);
+  --weui-BRAND: #07c160;
+  --weui-BRAND-LIGHT: #95ec69;
+  --weui-BG-MASK: rgba(0, 0, 0, 0.75);
 }
 
 * {

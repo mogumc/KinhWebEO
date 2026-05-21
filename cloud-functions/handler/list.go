@@ -27,8 +27,12 @@ func List(c *gin.Context) {
 		return
 	}
 
-	apiUrl := config.Cfg.User.ApiPath + "/api/list?order=time&dir=" + url.QueryEscape(dir)
+	apiUrl := config.Cfg.User.ApiPath + "/api/list?clienttype=0&app_id=250528&web=1&order=time&dir=" + url.QueryEscape(dir)
+	stoken := utils.GetStoken(BDUSS)
 	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	if stoken != "" {
+		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	}
 	res := utils.Get(apiUrl, "netdisk;Mo", cookie)
 
 	var JsonData map[string]interface{}
@@ -68,7 +72,11 @@ func List(c *gin.Context) {
 }
 
 func fetchReadmeContent(dlink, BDUSS string) string {
+	stoken := utils.GetStoken(BDUSS)
 	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	if stoken != "" {
+		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
+	}
 	res, err := utils.GetWithResponse(dlink, "netdisk;Mo", cookie)
 	if err != nil {
 		return ""

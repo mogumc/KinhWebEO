@@ -37,7 +37,7 @@ var defaultConfig = Config{
 		BDUSS:   "",
 		IsVIP:   0,
 		AccLink: "",
-		ApiPath: "http://110.242.69.43",
+		ApiPath: "https://pan.baidu.com",
 	},
 }
 

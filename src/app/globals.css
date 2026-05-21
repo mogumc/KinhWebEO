@@ -408,14 +408,14 @@ body {
 }
 
 /* File Icon Colors */
-.icon-folder { background: #ffc300; color: #fff; }
-.icon-image { background: #fa5151; color: #fff; }
-.icon-video { background: #576b95; color: #fff; }
-.icon-audio { background: #07c160; color: #fff; }
-.icon-doc { background: #576b95; color: #fff; }
-.icon-app { background: #fa9d3b; color: #fff; }
+.icon-folder { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-image { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-video { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-audio { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-doc { background: var(--weui-FG-3); color: var(--weui-FG-1); }
+.icon-app { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 .icon-other { background: var(--weui-FG-3); color: var(--weui-FG-1); }
-.icon-seed { background: #8b5cf6; color: #fff; }
+.icon-seed { background: var(--weui-FG-3); color: var(--weui-FG-1); }
 
 /* Scrollbar */
 ::-webkit-scrollbar {

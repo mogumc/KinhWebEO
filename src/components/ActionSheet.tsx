@@ -49,12 +49,7 @@ export default function ActionSheet({
         <div className="weui-actionsheet__cell" onClick={onDownload}>
           直接下载
         </div>
-        {(isVideo) && (
-          <div className="weui-actionsheet__cell" onClick={onPreview}>
-            预览文件
-          </div>
-        )}
-        {!isVideo && (
+        {isVideo && (
           <div className="weui-actionsheet__cell" onClick={onPreview}>
             预览文件
           </div>

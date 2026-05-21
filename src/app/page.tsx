@@ -71,7 +71,7 @@ export default function Home() {
 
   // 获取下载直链
   const getDownloadUrl = (fid: number) => {
-    const base = process.env.NEXT_PUBLIC_API_BASE || "";
+    const base = process.env.NEXT_PUBLIC_API_BASE || window.location.origin;
     return `${base}/api/down?fid=${fid}&m=.baidu.com`;
   };
 

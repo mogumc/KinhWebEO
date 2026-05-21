@@ -18,7 +18,7 @@
 ## 技术栈
 
 - **后端**: Go + Gin（EdgeOne 云函数）
-- **前端**: Next.js 15 + React 19 + Tailwind CSS 4
+- **前端**: Next.js 15 + React 19 + WeUI
 - **部署**: EdgeOne Pages + EdgeOne 云函数
 
 ## 项目结构

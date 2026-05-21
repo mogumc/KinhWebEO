@@ -29,6 +29,7 @@ func main() {
 
 	r.GET("/api/list", handler.List)
 	r.GET("/api/down", handler.Down)
+	r.GET("/api/config", handler.GetConfig)
 	r.GET("/", handler.Index)
 
 	addr := fmt.Sprintf("%s:%d", config.Cfg.System.Host, config.Cfg.System.Port)

@@ -12,7 +12,6 @@ interface GalleryProps {
 }
 
 export default function Gallery({ open, url, type, filename, onClose }: GalleryProps) {
-  const router = useRouter();
   const videoRef = useRef<HTMLDivElement>(null);
   const dpRef = useRef<any>(null);
   const [showOpr, setShowOpr] = useState(false);

@@ -118,10 +118,12 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	}
 
 	if mode == ".baidu.com" {
+		c.Header("Cache-Control", "public, max-age=18000")
 		c.Redirect(302, dlink)
 		return
 	}
 
+	c.Header("Cache-Control", "public, max-age=18000")
 	data := gin.H{"fid": intfid, "dlink": dlink}
 	result.Success(c, data)
 }
@@ -191,10 +193,12 @@ func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink st
 	log.Printf("获取到地址 %s", dlink)
 
 	if mode == ".baidu.com" {
+		c.Header("Cache-Control", "public, max-age=18000")
 		c.Redirect(302, dlink)
 		return
 	}
 
+	c.Header("Cache-Control", "public, max-age=18000")
 	data := gin.H{"fid": intfid, "dlink": dlink}
 	result.Success(c, data)
 }

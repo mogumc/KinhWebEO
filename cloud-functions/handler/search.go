@@ -52,6 +52,7 @@ func Search(c *gin.Context) {
 		if !ok {
 			lists = []interface{}{}
 		}
+		c.Header("Cache-Control", "public, max-age=300")
 		result.Success(c, gin.H{"list": lists})
 	} else {
 		result.Failed(c, errno, "搜索无结果或失败")

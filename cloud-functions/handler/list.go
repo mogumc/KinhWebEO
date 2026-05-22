@@ -49,6 +49,7 @@ func List(c *gin.Context) {
 			lists = []interface{}{}
 		}
 
+		c.Header("Cache-Control", "public, max-age=300")
 		data := gin.H{"dir": dir, "list": lists}
 		result.Success(c, data)
 	} else {

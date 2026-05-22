@@ -11,10 +11,11 @@ type Config struct {
 }
 
 type SystemConfig struct {
-	Port  int
-	Host  string
-	Title string
-	Foot  string
+	Port               int
+	Host               string
+	Title              string
+	Foot               string
+	InsecureSkipVerify bool
 }
 
 type UserConfig struct {
@@ -28,10 +29,11 @@ var Cfg *Config
 
 var defaultConfig = Config{
 	System: SystemConfig{
-		Port:  9000,
-		Host:  "0.0.0.0",
-		Title: "KinhWeb",
-		Foot:  "",
+		Port:               9000,
+		Host:               "0.0.0.0",
+		Title:              "KinhWeb",
+		Foot:               "",
+		InsecureSkipVerify: false,
 	},
 	User: UserConfig{
 		BDUSS:   "",
@@ -44,10 +46,11 @@ var defaultConfig = Config{
 func Init() {
 	Cfg = &Config{
 		System: SystemConfig{
-			Port:  getEnvInt("PORT", defaultConfig.System.Port),
-			Host:  getEnv("HOST", defaultConfig.System.Host),
-			Title: getEnv("TITLE", defaultConfig.System.Title),
-			Foot:  getEnv("FOOT", defaultConfig.System.Foot),
+			Port:               getEnvInt("PORT", defaultConfig.System.Port),
+			Host:               getEnv("HOST", defaultConfig.System.Host),
+			Title:              getEnv("TITLE", defaultConfig.System.Title),
+			Foot:               getEnv("FOOT", defaultConfig.System.Foot),
+			InsecureSkipVerify: getEnvBool("INSECURE_SKIP_VERIFY", defaultConfig.System.InsecureSkipVerify),
 		},
 		User: UserConfig{
 			BDUSS:   getEnv("BDUSS", defaultConfig.User.BDUSS),
@@ -70,6 +73,13 @@ func getEnvInt(key string, defaultVal int) int {
 		if intVal, err := strconv.Atoi(val); err == nil {
 			return intVal
 		}
+	}
+	return defaultVal
+}
+
+func getEnvBool(key string, defaultVal bool) bool {
+	if val := os.Getenv(key); val != "" {
+		return val == "true" || val == "1" || val == "TRUE"
 	}
 	return defaultVal
 }

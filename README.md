@@ -79,6 +79,7 @@ npm run dev
 | `FOOT` | 页脚文字，显示在页面底部 | `""` | 否 |
 | `PORT` | 后端服务监听端口 | `9000` | 否 |
 | `HOST` | 后端服务监听地址 | `0.0.0.0` | 否 |
+| `InsecureSkipVerify` | 跳过 SSL 证书验证| `false` | 否 |
 
 **前端环境变量**（Next.js 构建时）：
 
@@ -94,7 +95,7 @@ npm run dev
 # 后端环境变量
 export BDUSS="你的百度BDUSS"
 export TITLE="KinhWeb"
-export API_PATH="http://110.242.69.43"
+export API_PATH="https://pan.baidu.com"
 export IS_VIP=0
 
 # 前端环境变量
@@ -118,7 +119,7 @@ GET /api/list?dir=/path/
 ### 文件搜索
 
 ```
-GET /api/search?key=关键词&dir=/path/
+GET /api/search?key=关键词
 ```
 
 ### 文件下载

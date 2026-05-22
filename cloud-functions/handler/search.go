@@ -37,7 +37,12 @@ func Search(c *gin.Context) {
 	if stoken != "" {
 		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
 	}
-	res := utils.Get(apiUrl, "netdisk;Mo", cookie)
+	res, err := utils.Get(apiUrl, "netdisk;Mo", cookie)
+	if err != nil {
+		log.Printf("请求百度搜索API失败: %v", err)
+		result.Failed(c, 500, "搜索失败")
+		return
+	}
 
 	var JsonData map[string]interface{}
 	if err := json.Unmarshal([]byte(res), &JsonData); err != nil {

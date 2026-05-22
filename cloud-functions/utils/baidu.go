@@ -53,7 +53,11 @@ func GetStoken(bduss string) string {
 
 func Getrand(bduss string) string {
 	Url := "https://wenku.baidu.com/customer/interface/vipinfo"
-	result := Get(Url, "netdisk;11.0.0", "BDUSS="+bduss)
+	result, err := Get(Url, "netdisk;11.0.0", "BDUSS="+bduss)
+	if err != nil {
+		log.Printf("Getrand request failed: %v", err)
+		return "rand=0000&rand2=0000&devuid=114514&time=" + strconv.FormatInt(time.Now().Unix(), 10)
+	}
 	var JsonData map[string]interface{}
 	Time := strconv.FormatInt(time.Now().Unix(), 10)
 	if json.Unmarshal([]byte(result), &JsonData) == nil {

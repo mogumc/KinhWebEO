@@ -54,7 +54,12 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	if stoken != "" {
 		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
 	}
-	res := utils.Get(apiUrl, "netdisk;Mo", cookie)
+	res, err := utils.Get(apiUrl, "netdisk;Mo", cookie)
+	if err != nil {
+		log.Printf("请求百度API失败: %v", err)
+		result.Failed(c, 500, "获取下载地址失败")
+		return
+	}
 
 	var JsonData map[string]interface{}
 	if err := json.Unmarshal([]byte(res), &JsonData); err != nil {
@@ -131,7 +136,12 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 // downRemote 远程解析模式
 func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink string, mode string) {
 	log.Printf("当前处于远程解析模式")
-	res := utils.Get(acclink, "netdisk;Mo", "")
+	res, err := utils.Get(acclink, "netdisk;Mo", "")
+	if err != nil {
+		log.Printf("请求加速链接失败: %v", err)
+		result.Failed(c, 500, "获取下载地址失败")
+		return
+	}
 
 	var JsonData map[string]interface{}
 	if err := json.Unmarshal([]byte(res), &JsonData); err != nil {
@@ -167,7 +177,12 @@ func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink st
 	}
 
 	pdata := "bduss=" + BDUSS + "&fid=" + fid + "&ua=" + base64.StdEncoding.EncodeToString([]byte(c.Request.Header.Get("User-Agent")))
-	res = utils.Post(acclink, "KinhWeb", "", pdata)
+	res, err = utils.Post(acclink, "KinhWeb", "", pdata)
+	if err != nil {
+		log.Printf("请求加速链接失败: %v", err)
+		result.Failed(c, 500, "获取下载地址失败")
+		return
+	}
 
 	var JsonData2 map[string]interface{}
 	if err := json.Unmarshal([]byte(res), &JsonData2); err != nil {

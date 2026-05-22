@@ -250,7 +250,23 @@ export default function Home() {
 
       {/* Main Container */}
       <div className="weui-panel" style={{ margin: "8px 0" }}>
-        <div className="weui-panel__hd">文件列表</div>
+        <div className="weui-panel__hd" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: "14px" }}>文件列表</span>
+          <button
+            onClick={handleSortChange}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "14px",
+              color: "var(--weui-FG-1)",
+              fontWeight: "normal",
+              padding: 0,
+            }}
+          >
+            排序: {sortBy === "name" ? "名称" : sortBy === "time" ? "时间" : "大小"}
+          </button>
+        </div>
         <div style={{ padding: "4px 8px" }}>
           {keyword ? (
               <div style={{ padding: "4px", fontSize: "14px" }}>搜索: {keyword}</div>

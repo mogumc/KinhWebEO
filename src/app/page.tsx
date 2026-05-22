@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { Search, ArrowUpDown, Sun, Moon } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import FileList from "@/components/FileList";
 import ActionSheet from "@/components/ActionSheet";
@@ -16,6 +17,7 @@ export default function Home() {
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({ title: "KinhWeb", foot: "" });
   const [currentDir, setCurrentDir] = useState("/");
   const [searchKey, setSearchKey] = useState("");
+  const [keyword, setKeyword] = useState("");
   
   const handleSearch = () => {
     setKeyword(searchKey);
@@ -108,6 +110,16 @@ export default function Home() {
   useEffect(() => {
     document.title = siteConfig.title || "KinhWeb";
   }, [siteConfig.title]);
+
+  const [sortBy, setSortBy] = useState<"name" | "time" | "size">("name");
+
+  const handleSortChange = () => {
+    setSortBy((prev) => {
+      if (prev === "name") return "time";
+      if (prev === "time") return "size";
+      return "name";
+    });
+  };
 
   const handleOpenFile = (file: FileEntry) => {
     if (file.isdir === 1) {
@@ -207,14 +219,32 @@ export default function Home() {
         <button
           onClick={handleSearch}
           style={{
-            padding: "8px 16px",
-            borderRadius: "4px",
-            border: "none",
-            background: "var(--weui-BG-3)",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--weui-BG-2)",
+            borderRadius: "50%",
             cursor: "pointer",
+            boxShadow: "var(--shadow)",
+            border: "1px solid var(--weui-FG-3)",
+            padding: 0,
+            flexShrink: 0,
           }}
         >
-          搜索
+          <div style={{
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
+            background: "var(--weui-FG-2)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--weui-BG-0)"
+          }}>
+            <Search size={16} />
+          </div>
         </button>
       </div>
 
@@ -232,6 +262,7 @@ export default function Home() {
           files={files}
           loading={loading}
           onOpen={handleOpenFile}
+          sortBy={sortBy}
         />
       </div>
 

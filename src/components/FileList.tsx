@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo } from "react";
 import { FixedSizeList as List } from "react-window";
 import { AutoSizer } from "react-virtualized-auto-sizer";
 import { FileEntry } from "@/lib/api";
@@ -22,6 +22,7 @@ interface FileListProps {
   files: FileEntry[];
   loading: boolean;
   onOpen: (file: FileEntry) => void;
+  sortBy: "name" | "time" | "size";
 }
 
 const iconMap: Record<FileCategory, React.ReactNode> = {
@@ -82,19 +83,7 @@ const Row = memo(({ data, index, style }: { data: { files: FileEntry[], onOpen: 
 
 Row.displayName = 'Row';
 
-export default function FileList({ files, loading, onOpen }: FileListProps) {
-  const [sortBy, setSortBy] = useState<"name" | "time" | "size">("name");
-  const [showSortOptions, setShowSortOptions] = useState(false);
-
-  const handleSortChange = (newSortBy: "name" | "time" | "size") => {
-    if (sortBy === newSortBy) {
-      setShowSortOptions(false);
-    } else {
-      setSortBy(newSortBy);
-      setShowSortOptions(false);
-    }
-  };
-
+export default function FileList({ files, loading, onOpen, sortBy }: FileListProps) {
   const sortedFiles = useMemo(() => {
     return [...files].sort((a, b) => {
       // 文件夹优先
@@ -121,14 +110,6 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
     );
   }
 
-  if (files.length === 0) {
-    return (
-      <div style={{ padding: "40px 16px", textAlign: "center", color: "var(--weui-FG-2)" }}>
-        暂无文件
-      </div>
-    );
-  }
-
   const renderList = (size: { height: number | undefined; width: number | undefined }) => (
     <List
       height={size.height ?? 0}
@@ -143,54 +124,13 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
 
   return (
     <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
-      <div style={{ padding: "8px 16px", position: "relative" }}>
-        <button
-          onClick={() => setShowSortOptions(!showSortOptions)}
-          style={{
-            padding: "4px 12px",
-            borderRadius: "4px",
-            border: "none",
-            background: "var(--weui-BG-2)",
-            cursor: "pointer",
-          }}
-        >
-          排序: {sortBy === "name" ? "名称" : sortBy === "time" ? "时间" : "大小"}
-        </button>
-        {showSortOptions && (
-          <div
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: "16px",
-              background: "var(--weui-BG-2)",
-              borderRadius: "4px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              zIndex: 10,
-              padding: "4px 0",
-              marginTop: "4px",
-            }}
-          >
-            {(["name", "time", "size"] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => handleSortChange(type)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  padding: "8px 16px",
-                  background: sortBy === type ? "var(--weui-BG-3)" : "transparent",
-                  border: "none",
-                  textAlign: "left",
-                  cursor: "pointer",
-                }}
-              >
-                {type === "name" ? "名称" : type === "time" ? "时间" : "大小"}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      <AutoSizer renderProp={renderList} />
+      {files.length === 0 ? (
+        <div style={{ padding: "40px 16px", textAlign: "center", color: "var(--weui-FG-2)" }}>
+          暂无文件
+        </div>
+      ) : (
+        <AutoSizer renderProp={renderList} />
+      )}
     </div>
   );
 }

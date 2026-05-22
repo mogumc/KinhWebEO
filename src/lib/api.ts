@@ -77,7 +77,16 @@ export async function fetchFileList(dir: string): Promise<ListResponse> {
 }
 
 export async function fetchSearch(key: string, dir: string = "/"): Promise<ListResponse> {
-  return request<ListResponse>(`/api/search?key=${encodeURIComponent(key)}&dir=${encodeURIComponent(dir)}`);
+  const cacheKey = `search_${key}_${dir}`;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    console.log(`[Frontend Cache] Hit for ${cacheKey}`);
+    return JSON.parse(cached);
+  }
+
+  const data = await request<ListResponse>(`/api/search?key=${encodeURIComponent(key)}&dir=${encodeURIComponent(dir)}`);
+  sessionStorage.setItem(cacheKey, JSON.stringify(data));
+  return data;
 }
 
 export async function fetchDownloadLink(

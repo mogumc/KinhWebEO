@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { Search, ArrowUpDown, Sun, Moon } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import FileList from "@/components/FileList";
 import ActionSheet from "@/components/ActionSheet";
@@ -15,7 +16,12 @@ import DOMPurify from "dompurify";
 export default function Home() {
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({ title: "KinhWeb", foot: "" });
   const [currentDir, setCurrentDir] = useState("/");
+  const [searchKey, setSearchKey] = useState("");
   const [keyword, setKeyword] = useState("");
+  
+  const handleSearch = () => {
+    setKeyword(searchKey);
+  };
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [readme, setReadme] = useState("");
   const [loading, setLoading] = useState(false);
@@ -105,6 +111,16 @@ export default function Home() {
     document.title = siteConfig.title || "KinhWeb";
   }, [siteConfig.title]);
 
+  const [sortBy, setSortBy] = useState<"name" | "time" | "size">("name");
+
+  const handleSortChange = () => {
+    setSortBy((prev) => {
+      if (prev === "name") return "time";
+      if (prev === "time") return "size";
+      return "name";
+    });
+  };
+
   const handleOpenFile = (file: FileEntry) => {
     if (file.isdir === 1) {
       setCurrentDir(file.path);
@@ -186,19 +202,83 @@ export default function Home() {
       <h2 className="weui-form__title">{siteConfig.title || "KinhWeb"}</h2>
 
       {/* Search Bar */}
-      <div style={{ padding: "0 16px 8px" }}>
+      <div style={{ padding: "0 16px 8px", display: "flex", gap: "8px" }}>
         <input
           type="text"
           placeholder="搜索文件..."
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
           style={{
-            width: "100%",
+            flex: 1,
             padding: "8px",
             borderRadius: "4px",
             border: "1px solid var(--weui-FG-3)",
             background: "var(--weui-BG-2)",
           }}
+        />
+        <button
+          onClick={handleSearch}
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--weui-BG-2)",
+            borderRadius: "50%",
+            cursor: "pointer",
+            boxShadow: "var(--shadow)",
+            border: "1px solid var(--weui-FG-3)",
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <div style={{
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
+            background: "var(--weui-FG-2)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--weui-BG-0)"
+          }}>
+            <Search size={16} />
+          </div>
+        </button>
+      </div>
+
+      {/* Main Container */}
+      <div className="weui-panel" style={{ margin: "8px 0" }}>
+        <div className="weui-panel__hd" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: "14px" }}>文件列表</span>
+          <button
+            onClick={handleSortChange}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "14px",
+              color: "var(--weui-FG-1)",
+              fontWeight: "normal",
+              padding: 0,
+            }}
+          >
+            排序: {sortBy === "name" ? "名称" : sortBy === "time" ? "时间" : "大小"}
+          </button>
+        </div>
+        <div style={{ padding: "4px 8px" }}>
+          {keyword ? (
+              <div style={{ padding: "4px", fontSize: "14px", color: "var(--weui-FG-2)" }}>搜索: {keyword}</div>
+          ) : (
+            <Breadcrumb path={currentDir} onNavigate={setCurrentDir} />
+          )}
+        </div>
+        <FileList
+          files={files}
+          loading={loading}
+          onOpen={handleOpenFile}
+          sortBy={sortBy}
         />
       </div>
 
@@ -212,19 +292,6 @@ export default function Home() {
           />
         </div>
       )}
-
-      {/* Main Container */}
-      <div className="weui-panel" style={{ margin: "8px 0" }}>
-        <div className="weui-panel__hd">文件列表</div>
-        <div style={{ padding: "4px 8px" }}>
-          <Breadcrumb path={currentDir} onNavigate={setCurrentDir} />
-        </div>
-        <FileList
-          files={files}
-          loading={loading}
-          onOpen={handleOpenFile}
-        />
-      </div>
 
       {/* Footer */}
       <div className="weui-footer">

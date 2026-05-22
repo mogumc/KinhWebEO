@@ -9,45 +9,54 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ path, onNavigate }: BreadcrumbProps) {
   const parts = path.split("/").filter(Boolean);
+  const isRoot = parts.length === 0;
 
-  const handleClick = (index: number) => {
-    const targetPath = "/" + parts.slice(0, index + 1).join("/") + "/";
-    onNavigate(targetPath);
-  };
+  if (isRoot) {
+    return (
+      <div style={{ padding: "4px 0", fontSize: "14px", color: "var(--weui-FG-2)" }}>
+        <span style={{ cursor: "default" }}>全部文件</span>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: "4px 0", display: "flex", flexWrap: "wrap", gap: "4px" }}>
-      <div className="placeholder">
-        <a
-          href="javascript:void(0)"
-          role="button"
-          className="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavigate("/");
-          }}
-          title="全部文件"
-        >
-          全部文件
-        </a>
-      </div>
+    <div style={{ padding: "4px 0", display: "flex", flexWrap: "wrap", alignItems: "center", fontSize: "14px" }}>
+      {/* 返回上一级 */}
+      <span
+        style={{ cursor: "pointer", color: "var(--weui-LINK)" }}
+        onClick={() => onNavigate(parts.length > 1 ? "/" + parts.slice(0, -1).join("/") + "/" : "/")}
+      >
+        <span>返回上一级</span>
+        <span style={{ margin: "0 8px", color: "var(--weui-FG-2)" }}>|</span>
+      </span>
+
+      {/* 全部文件 (根) */}
+      <span
+        style={{ cursor: "pointer", color: "var(--weui-LINK)" }}
+        onClick={() => onNavigate("/")}
+      >
+        <span>全部文件</span>
+        <span style={{ margin: "0 8px", color: "var(--weui-FG-2)" }}>&gt;</span>
+      </span>
+
+      {/* 当前路径部分 */}
       {parts.map((part, index) => {
-        const displayPart = part.length > 7 ? part.substring(0, 7) + "..." : part;
+        const isLast = index === parts.length - 1;
+        const currentPath = "/" + parts.slice(0, index + 1).join("/") + "/";
+        
         return (
-          <div key={index} className="placeholder">
-            <a
-              href="javascript:void(0)"
-              role="button"
-              className="weui-btn weui-btn_mini weui-btn_default weui-wa-hotarea"
-              onClick={(e) => {
-                e.preventDefault();
-                handleClick(index);
-              }}
-              title={part}
-            >
-              {displayPart}
-            </a>
-          </div>
+          <span
+            key={index}
+            style={{
+              color: isLast ? "var(--weui-FG-2)" : "var(--weui-LINK)",
+              cursor: isLast ? "default" : "pointer"
+            }}
+          >
+            <span onClick={!isLast ? () => onNavigate(currentPath) : undefined}>
+              {part}
+            </span>
+            {!isLast && <span style={{ margin: "0 8px", color: "var(--weui-FG-2)" }}>&gt;</span>}
+          </span>
         );
       })}
     </div>

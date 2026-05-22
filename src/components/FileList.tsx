@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo } from "react";
 import { FixedSizeList as List } from "react-window";
 import { AutoSizer } from "react-virtualized-auto-sizer";
 import { FileEntry } from "@/lib/api";
@@ -22,6 +22,7 @@ interface FileListProps {
   files: FileEntry[];
   loading: boolean;
   onOpen: (file: FileEntry) => void;
+  sortBy: "name" | "time" | "size";
 }
 
 const iconMap: Record<FileCategory, React.ReactNode> = {
@@ -82,9 +83,7 @@ const Row = memo(({ data, index, style }: { data: { files: FileEntry[], onOpen: 
 
 Row.displayName = 'Row';
 
-export default function FileList({ files, loading, onOpen }: FileListProps) {
-  const [sortBy, setSortBy] = useState<"name" | "time" | "size">("name");
-
+export default function FileList({ files, loading, onOpen, sortBy }: FileListProps) {
   const sortedFiles = useMemo(() => {
     return [...files].sort((a, b) => {
       // 文件夹优先
@@ -111,14 +110,6 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
     );
   }
 
-  if (files.length === 0) {
-    return (
-      <div style={{ padding: "40px 16px", textAlign: "center", color: "var(--weui-FG-2)" }}>
-        暂无文件
-      </div>
-    );
-  }
-
   const renderList = (size: { height: number | undefined; width: number | undefined }) => (
     <List
       height={size.height ?? 0}
@@ -133,18 +124,13 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
 
   return (
     <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
-        <div style={{ padding: "8px 16px", display: "flex", gap: "8px" }}>
-            {["name", "time", "size"].map(type => (
-                <button 
-                    key={type}
-                    onClick={() => setSortBy(type as any)}
-                    style={{ background: sortBy === type ? "var(--weui-BG-3)" : "var(--weui-BG-2)", padding: "4px 8px", borderRadius: "4px", border: "none" }}
-                >
-                    {type === "name" ? "名称" : type === "time" ? "时间" : "大小"}
-                </button>
-            ))}
+      {files.length === 0 ? (
+        <div style={{ padding: "40px 16px", textAlign: "center", color: "var(--weui-FG-2)" }}>
+          暂无文件
         </div>
-      <AutoSizer renderProp={renderList} />
+      ) : (
+        <AutoSizer renderProp={renderList} />
+      )}
     </div>
   );
 }

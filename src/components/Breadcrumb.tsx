@@ -16,38 +16,32 @@ export default function Breadcrumb({ path, onNavigate }: BreadcrumbProps) {
   };
 
   return (
-    <div style={{ padding: "4px 0", display: "flex", flexWrap: "wrap", gap: "4px" }}>
-      <div className="placeholder">
-        <a
-          href="javascript:void(0)"
-          role="button"
-          className="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavigate("/");
-          }}
-          title="全部文件"
-        >
-          全部文件
-        </a>
-      </div>
+    <div style={{ padding: "4px 0", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px", fontSize: "14px" }}>
+      <a
+        href="javascript:void(0)"
+        onClick={(e) => {
+          e.preventDefault();
+          onNavigate("/");
+        }}
+        style={{ color: "var(--weui-LINK)", textDecoration: "none" }}
+      >
+        全部文件
+      </a>
       {parts.map((part, index) => {
-        const displayPart = part.length > 7 ? part.substring(0, 7) + "..." : part;
         return (
-          <div key={index} className="placeholder">
+          <React.Fragment key={index}>
+            <span>/</span>
             <a
               href="javascript:void(0)"
-              role="button"
-              className="weui-btn weui-btn_mini weui-btn_default weui-wa-hotarea"
               onClick={(e) => {
                 e.preventDefault();
                 handleClick(index);
               }}
-              title={part}
+              style={{ color: "var(--weui-LINK)", textDecoration: "none" }}
             >
-              {displayPart}
+              {part}
             </a>
-          </div>
+          </React.Fragment>
         );
       })}
     </div>

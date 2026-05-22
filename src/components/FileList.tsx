@@ -84,6 +84,16 @@ Row.displayName = 'Row';
 
 export default function FileList({ files, loading, onOpen }: FileListProps) {
   const [sortBy, setSortBy] = useState<"name" | "time" | "size">("name");
+  const [showSortOptions, setShowSortOptions] = useState(false);
+
+  const handleSortChange = (newSortBy: "name" | "time" | "size") => {
+    if (sortBy === newSortBy) {
+      setShowSortOptions(false);
+    } else {
+      setSortBy(newSortBy);
+      setShowSortOptions(false);
+    }
+  };
 
   const sortedFiles = useMemo(() => {
     return [...files].sort((a, b) => {
@@ -133,17 +143,53 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
 
   return (
     <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
-        <div style={{ padding: "8px 16px", display: "flex", gap: "8px" }}>
-            {["name", "time", "size"].map(type => (
-                <button 
-                    key={type}
-                    onClick={() => setSortBy(type as any)}
-                    style={{ background: sortBy === type ? "var(--weui-BG-3)" : "var(--weui-BG-2)", padding: "4px 8px", borderRadius: "4px", border: "none" }}
-                >
-                    {type === "name" ? "名称" : type === "time" ? "时间" : "大小"}
-                </button>
+      <div style={{ padding: "8px 16px", position: "relative" }}>
+        <button
+          onClick={() => setShowSortOptions(!showSortOptions)}
+          style={{
+            padding: "4px 12px",
+            borderRadius: "4px",
+            border: "none",
+            background: "var(--weui-BG-2)",
+            cursor: "pointer",
+          }}
+        >
+          排序: {sortBy === "name" ? "名称" : sortBy === "time" ? "时间" : "大小"}
+        </button>
+        {showSortOptions && (
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: "16px",
+              background: "var(--weui-BG-2)",
+              borderRadius: "4px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              zIndex: 10,
+              padding: "4px 0",
+              marginTop: "4px",
+            }}
+          >
+            {(["name", "time", "size"] as const).map((type) => (
+              <button
+                key={type}
+                onClick={() => handleSortChange(type)}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "8px 16px",
+                  background: sortBy === type ? "var(--weui-BG-3)" : "transparent",
+                  border: "none",
+                  textAlign: "left",
+                  cursor: "pointer",
+                }}
+              >
+                {type === "name" ? "名称" : type === "time" ? "时间" : "大小"}
+              </button>
             ))}
-        </div>
+          </div>
+        )}
+      </div>
       <AutoSizer renderProp={renderList} />
     </div>
   );

@@ -2,13 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"io"
 	"kinhweb-eo/config"
 	"kinhweb-eo/result"
 	"kinhweb-eo/utils"
 	"log"
 	"net/url"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )

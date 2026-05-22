@@ -30,6 +30,7 @@ func main() {
 	r.GET("/down", handler.Down)
 	r.GET("/config", handler.GetConfig)
 	r.GET("/search", handler.Search)
+	r.GET("/readme", handler.GetReadme)
 
 	addr := fmt.Sprintf("%s:%d", config.Cfg.System.Host, config.Cfg.System.Port)
 	log.Printf("KinhWebEO 启动成功 运行在: %s", addr)

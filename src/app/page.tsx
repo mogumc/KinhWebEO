@@ -45,11 +45,30 @@ export default function Home() {
 
   const loadFiles = useCallback(async (dir: string, key?: string) => {
     setLoading(true);
+    setReadme(""); // 清空 README
     showToast(key ? "搜索中" : "获取文件列表中", "loading");
     try {
       const data = key ? await fetchSearch(key, dir) : await fetchFileList(dir);
       setFiles(data.list || []);
-      setReadme(data.readme || "");
+      
+      // 前端查找 README
+      const readmeFile = data.list.find((file: FileEntry) => 
+        file.server_filename.toLowerCase() === "readme.md"
+      );
+      
+      if (readmeFile) {
+        try {
+          const dlData = await fetchDownloadLink(readmeFile.fs_id);
+          const res = await fetch(dlData.dlink);
+          if (res.ok) {
+            const content = await res.text();
+            // 限制大小
+            setReadme(content.length > 51200 ? content.substring(0, 51200) + "\n...(内容过长已截断)" : content);
+          }
+        } catch (e) {
+          console.error("获取 README 失败", e);
+        }
+      }
     } catch (err) {
       showToast(err instanceof Error ? err.message : "获取失败");
     } finally {

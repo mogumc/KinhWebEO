@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { FixedSizeList as List } from "react-window";
 import { AutoSizer } from "react-virtualized-auto-sizer";
 import { FileEntry } from "@/lib/api";
@@ -37,6 +37,11 @@ const iconMap: Record<FileCategory, React.ReactNode> = {
   text: <AlignLeft size={24} />,
 };
 
+const formatDate = (timestamp: number) => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleString();
+};
+
 const Row = memo(({ data, index, style }: { data: { files: FileEntry[], onOpen: (f: FileEntry) => void }, index: number; style: React.CSSProperties }) => {
   const file = data.files[index];
   const onOpen = data.onOpen;
@@ -61,9 +66,10 @@ const Row = memo(({ data, index, style }: { data: { files: FileEntry[], onOpen: 
         <div className="weui-media-box__text">
           <div className="weui-media-box__title">{file.server_filename}</div>
           <div className="weui-media-box__desc">
-            {file.isdir === 1 ? "文件夹" : (
-              <span>{formatBytes(file.size)}</span>
-            )}
+             <span>{formatDate(file.server_mtime)}</span>
+             <span style={{ marginLeft: "8px" }}>
+                {file.isdir === 1 ? "文件夹" : formatBytes(file.size)}
+             </span>
           </div>
         </div>
         <div className="weui-media-box__ft">
@@ -77,6 +83,23 @@ const Row = memo(({ data, index, style }: { data: { files: FileEntry[], onOpen: 
 Row.displayName = 'Row';
 
 export default function FileList({ files, loading, onOpen }: FileListProps) {
+  const [sortBy, setSortBy] = useState<"name" | "time" | "size">("name");
+
+  const sortedFiles = useMemo(() => {
+    return [...files].sort((a, b) => {
+      // 文件夹优先
+      if (a.isdir !== b.isdir) return b.isdir - a.isdir;
+      
+      // 按类型排序
+      switch (sortBy) {
+        case "time": return b.server_mtime - a.server_mtime;
+        case "size": return b.size - a.size;
+        case "name":
+        default: return a.server_filename.localeCompare(b.server_filename);
+      }
+    });
+  }, [files, sortBy]);
+
   if (loading) {
     return (
       <div style={{ padding: "40px 16px", textAlign: "center" }}>
@@ -99,10 +122,10 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
   const renderList = (size: { height: number | undefined; width: number | undefined }) => (
     <List
       height={size.height ?? 0}
-      itemCount={files.length}
+      itemCount={sortedFiles.length}
       itemSize={80}
       width={size.width ?? 0}
-      itemData={{ files, onOpen }}
+      itemData={{ files: sortedFiles, onOpen }}
     >
       {Row as any}
     </List>
@@ -110,6 +133,17 @@ export default function FileList({ files, loading, onOpen }: FileListProps) {
 
   return (
     <div style={{ height: "calc(100vh - 250px)", width: "100%" }}>
+        <div style={{ padding: "8px 16px", display: "flex", gap: "8px" }}>
+            {["name", "time", "size"].map(type => (
+                <button 
+                    key={type}
+                    onClick={() => setSortBy(type as any)}
+                    style={{ background: sortBy === type ? "var(--weui-BG-3)" : "var(--weui-BG-2)", padding: "4px 8px", borderRadius: "4px", border: "none" }}
+                >
+                    {type === "name" ? "名称" : type === "time" ? "时间" : "大小"}
+                </button>
+            ))}
+        </div>
       <AutoSizer renderProp={renderList} />
     </div>
   );

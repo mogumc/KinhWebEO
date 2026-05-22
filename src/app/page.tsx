@@ -58,15 +58,35 @@ export default function Home() {
       
       if (readmeFile) {
         try {
-          const dlData = await fetchDownloadLink(readmeFile.fs_id);
-          const res = await fetch(dlData.dlink);
-          if (res.ok) {
-            const content = await res.text();
-            // 限制大小
-            setReadme(content.length > 51200 ? content.substring(0, 51200) + "\n...(内容过长已截断)" : content);
+          const cacheKey = `readme_cache_${readmeFile.fs_id}`;
+          const cached = localStorage.getItem(cacheKey);
+          
+          let useCache = false;
+          if (cached) {
+            const cacheData = JSON.parse(cached);
+            if (cacheData.size === readmeFile.size && (cacheData.md5 === readmeFile.md5)) {
+              setReadme(cacheData.content);
+              useCache = true;
+            }
+          }
+
+          if (!useCache) {
+            const res = await fetch(`/api/readme?fid=${readmeFile.fs_id}`);
+            if (res.ok) {
+              const content = await res.text();
+              setReadme(content);
+              localStorage.setItem(cacheKey, JSON.stringify({
+                md5: readmeFile.md5,
+                size: readmeFile.size,
+                content: content
+              }));
+            } else {
+              setReadme(""); // 降级：fetch失败则不显示
+            }
           }
         } catch (e) {
           console.error("获取 README 失败", e);
+          setReadme(""); // 降级：异常则不显示
         }
       }
     } catch (err) {

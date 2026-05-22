@@ -63,6 +63,17 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
 
   if (!open) return null;
 
+  const btnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    cursor: "pointer",
+    color: "#fff",
+  };
+
   // 修改后的返回界面逻辑
   return (
     <div className="weui-gallery" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.8)" }}>

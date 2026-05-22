@@ -269,7 +269,7 @@ export default function Home() {
         </div>
         <div style={{ padding: "4px 8px" }}>
           {keyword ? (
-              <div style={{ padding: "4px", fontSize: "14px" }}>搜索: {keyword}</div>
+              <div style={{ padding: "4px", fontSize: "14px", color: "var(--weui-FG-2)" }}>搜索: {keyword}</div>
           ) : (
             <Breadcrumb path={currentDir} onNavigate={setCurrentDir} />
           )}

@@ -5,6 +5,7 @@ export interface FileEntry {
   size: number;
   isdir: number;
   server_filename: string;
+  server_mtime: number; // 增加修改时间
   category: number;
   md5?: string;
   thumbs?: {

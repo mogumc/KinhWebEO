@@ -54,7 +54,7 @@ export default function ThemeToggle() {
         width: "32px",
         height: "32px",
         borderRadius: "50%",
-        background: "var(--weui-FG-3)",
+        background: "var(--weui-FG-2)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

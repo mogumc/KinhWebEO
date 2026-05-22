@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { X, ExternalLink } from "lucide-react";
 
 interface GalleryProps {
   open: boolean;
@@ -12,7 +12,6 @@ interface GalleryProps {
 }
 
 export default function Gallery({ open, url, type, filename, onClose }: GalleryProps) {
-  const router = useRouter();
   const videoRef = useRef<HTMLDivElement>(null);
   const dpRef = useRef<any>(null);
   const [showOpr, setShowOpr] = useState(false);
@@ -64,41 +63,46 @@ export default function Gallery({ open, url, type, filename, onClose }: GalleryP
 
   if (!open) return null;
 
-  const btnStyle: React.CSSProperties = {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    width: "44px",
-    height: "44px",
-    borderRadius: "50%",
-    background: "rgba(0,0,0,0.3)",
-    color: "#fff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    fontSize: "14px",
-    opacity: showOpr ? 1 : 0,
-    transition: "opacity 0.3s",
-    zIndex: 6001,
-  };
-
+  // 修改后的返回界面逻辑
   return (
-    <div className="weui-gallery" onMouseEnter={() => setShowOpr(true)} onMouseLeave={() => setShowOpr(false)}>
-      {type === "image" && (
-        <div
-          className="weui-gallery__img"
-          style={{ backgroundImage: `url(${url})` }}
-        />
-      )}
-      {type === "video" && (
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
+    <div className="weui-gallery" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.8)" }}>
+      <div 
+        style={{ 
+          width: "90vw", 
+          height: "80vh", 
+          position: "relative", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center",
+          background: "#000",
+          borderRadius: "8px",
+          overflow: "hidden"
+        }}
+      >
+        {type === "image" && (
+          <img src={url} alt={filename} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+        )}
+        {type === "video" && (
           <div ref={videoRef} style={{ width: "100%", height: "100%" }} />
+        )}
+
+        <div style={{ position: "absolute", top: "10px", right: "10px", display: "flex", gap: "10px" }}>
+          <div 
+            style={{ ...btnStyle, position: "static", transform: "none", opacity: 1, background: "rgba(255,255,255,0.2)" }} 
+            onClick={handleOpenNewWindow}
+            title="在新窗口打开"
+          >
+            <ExternalLink size={20} />
+          </div>
+          <div 
+            style={{ ...btnStyle, position: "static", transform: "none", opacity: 1, background: "rgba(255,255,255,0.2)" }} 
+            onClick={onClose}
+            title="关闭"
+          >
+            <X size={20} />
+          </div>
         </div>
-      )}
-      
-      <div style={{ ...btnStyle, left: "10px" }} onClick={onClose}>关</div>
-      <div style={{ ...btnStyle, right: "10px" }} onClick={handleOpenNewWindow}>开</div>
+      </div>
     </div>
   );
 }

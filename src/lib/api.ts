@@ -77,7 +77,7 @@ export async function fetchFileList(dir: string): Promise<ListResponse> {
 }
 
 export async function fetchSearch(key: string, dir: string = "/"): Promise<ListResponse> {
-  const cacheKey = `search_${key}_${dir}`;
+  const cacheKey = `search_${key}`;
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) {
     console.log(`[Frontend Cache] Hit for ${cacheKey}`);

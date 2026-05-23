@@ -5,7 +5,8 @@
 
 # KinhWebEO
 
-百度网盘文件管理工具 - EdgeOne Serverless 版本
+百度网盘文件管理工具 - EdgeOne Serverless 版本  
+[![使用 EdgeOne Pages 部署](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Fmogumc%2FKinhWebEO)
 
 ## 功能特性
 

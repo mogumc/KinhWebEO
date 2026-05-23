@@ -36,7 +36,7 @@ func GetStoken() string {
 	url := apipath + "/rest/2.0/xpan/file?method=plantcookie&type=stoken&source=pcs"
 	cookie := "BDUSS=" + bduss + ";PANPSC=;BAIDUID=1;ndut_fmt=" + Getndut()
 	if ptoken != "" {
-		cookie = "BDUSS=" + bduss + ";PTOKEN=" + ptoken + "PANPSC=;BAIDUID=1;ndut_fmt=" + Getndut()
+		cookie = "BDUSS=" + bduss + ";PTOKEN=" + ptoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + Getndut()
 	}
 	resp, err := GetWithResponse(url, "netdisk;Mo", cookie)
 	if err != nil {
@@ -60,7 +60,7 @@ func GetStoken() string {
 			return ""
 		}
 
-		if !strings.Contains(location2, "&errno=0") && !strings.Contains(location2, "&stoken=") {
+		if !strings.Contains(location2, "&stoken=") {
 			log.Printf("GetStoken failed: %s", "PTOKEN无效")
 			return ""
 		}

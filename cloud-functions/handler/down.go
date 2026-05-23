@@ -47,9 +47,8 @@ func Down(c *gin.Context) {
 func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string) {
 	log.Printf("当前处于本地解析模式")
 	apipath := config.Cfg.User.ApiPath
-	apiUrl := apipath + "/api/filemetas?dlink=1&clienttype=0&rt=third&fsids=[%22" + fid + "%22]"
-
-	stoken := utils.GetStoken(BDUSS)
+	apiUrl := apipath + "/api/filemetas?dlink=1&clienttype=8&rt=third&fsids=[%22" + fid + "%22]"
+	stoken := utils.GetStoken()
 	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
 	if stoken != "" {
 		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
@@ -98,7 +97,7 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	}
 
 	rand := utils.Getrand(BDUSS)
-	dl := strings.Replace(strings.Replace(odlink, "d.pcs.baidu.com", "218.93.204.36/b/d.pcs.baidu.com", -1), "https", "http", -1) + "&clienttype=0&channel=0&version=8.4.0.103&" + rand
+	dl := strings.Replace(strings.Replace(odlink, "d.pcs.baidu.com", "218.93.204.36/b/d.pcs.baidu.com", -1), "https", "http", -1) + "&channel=0&version=8.4.0.103&" + rand
 	headResult := utils.Head(dl, c.Request.Header.Get("User-Agent"), "")
 	dlink := ""
 	if headResult != nil {
@@ -108,7 +107,7 @@ func downLocal(c *gin.Context, intfid int, fid string, BDUSS string, mode string
 	}
 
 	if dlink == "" {
-		dl = odlink + "&clienttype=0&channel=0&version=8.4.0.103&" + rand
+		dl = odlink + "&channel=0&version=8.4.0.103&" + rand
 		headResult = utils.Head(dl, c.Request.Header.Get("User-Agent"), "")
 		if headResult != nil {
 			if loc := headResult.Get("Location"); loc != "" {
@@ -176,7 +175,8 @@ func downRemote(c *gin.Context, intfid int, fid string, BDUSS string, acclink st
 		return
 	}
 
-	pdata := "bduss=" + BDUSS + "&fid=" + fid + "&ua=" + base64.StdEncoding.EncodeToString([]byte(c.Request.Header.Get("User-Agent")))
+	stoken := utils.GetStoken()
+	pdata := "bduss=" + BDUSS + "&stoken=" + stoken + "&fid=" + fid + "&ua=" + base64.StdEncoding.EncodeToString([]byte(c.Request.Header.Get("User-Agent")))
 	res, err = utils.Post(acclink, "KinhWeb", "", pdata)
 	if err != nil {
 		log.Printf("请求加速链接失败: %v", err)

@@ -8,37 +8,37 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"kinhweb-eo/config"
 )
 
-var client *http.Client
+var (
+	clientOnce sync.Once
+	client     *http.Client
+)
 
-// getClient 初始化或获取 HTTP 客户端，确保配置已加载
+// getClient 初始化或获取 HTTP 客户端
 func getClient() *http.Client {
-	if client != nil {
-		return client
-	}
-
-	transport := &http.Transport{}
-	// 如果配置已加载，优先使用配置
-	if config.Cfg != nil && config.Cfg.System.InsecureSkipVerify {
-		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: true,
+	clientOnce.Do(func() {
+		transport := &http.Transport{}
+		if config.Cfg != nil && config.Cfg.System.InsecureSkipVerify {
+			transport.TLSClientConfig = &tls.Config{
+				InsecureSkipVerify: true,
+			}
 		}
-	}
 
-	client = &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-		Timeout:   15 * time.Second,
-		Transport: transport,
-	}
+		client = &http.Client{
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				return http.ErrUseLastResponse
+			},
+			Timeout:   15 * time.Second,
+			Transport: transport,
+		}
+	})
 	return client
 }
-
 
 func Get(url string, ua string, cookie string) (string, error) {
 	req, err := http.NewRequest("GET", url, nil)

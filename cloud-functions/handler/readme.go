@@ -28,7 +28,7 @@ func GetReadme(c *gin.Context) {
 	apipath := config.Cfg.User.ApiPath
 	apiUrl := apipath + "/api/filemetas?dlink=1&clienttype=0&rt=third&fsids=[%22" + fid + "%22]"
 
-	stoken := utils.GetStoken(BDUSS)
+	stoken := utils.GetStoken()
 	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
 	if stoken != "" {
 		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()

@@ -25,8 +25,8 @@ func List(c *gin.Context) {
 		return
 	}
 
-	apiUrl := config.Cfg.User.ApiPath + "/api/list?clienttype=0&app_id=250528&web=1&order=time&dir=" + url.QueryEscape(dir)
-	stoken := utils.GetStoken(BDUSS)
+	apiUrl := config.Cfg.User.ApiPath + "/api/listall?clienttype=0&app_id=250528&web=1&order=time&dir=" + url.QueryEscape(dir)
+	stoken := utils.GetStoken()
 	cookie := "BDUSS=" + BDUSS + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()
 	if stoken != "" {
 		cookie += ";STOKEN=" + stoken + ";PANPSC=;BAIDUID=1;ndut_fmt=" + utils.Getndut()

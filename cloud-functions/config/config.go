@@ -19,6 +19,8 @@ type SystemConfig struct {
 }
 
 type UserConfig struct {
+	STOKEN  string
+	PTOKEN  string
 	BDUSS   string
 	IsVIP   int
 	AccLink string
@@ -53,6 +55,8 @@ func Init() {
 			InsecureSkipVerify: getEnvBool("INSECURE_SKIP_VERIFY", defaultConfig.System.InsecureSkipVerify),
 		},
 		User: UserConfig{
+			STOKEN:  getEnv("STOKEN", defaultConfig.User.STOKEN),
+			PTOKEN:  getEnv("PTOKEN", defaultConfig.User.PTOKEN),
 			BDUSS:   getEnv("BDUSS", defaultConfig.User.BDUSS),
 			IsVIP:   getEnvInt("IS_VIP", defaultConfig.User.IsVIP),
 			AccLink: getEnv("ACCLINK", defaultConfig.User.AccLink),

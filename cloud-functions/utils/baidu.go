@@ -25,15 +25,48 @@ func Getndut() string {
 	return ndut_fmt
 }
 
-func GetStoken(bduss string) string {
+func GetStoken() string {
 	apipath := config.Cfg.User.ApiPath
+	bduss := config.Cfg.User.BDUSS
+	ptoken := config.Cfg.User.PTOKEN
+	stoken := config.Cfg.User.STOKEN
+	if stoken != "" {
+		return stoken
+	}
 	url := apipath + "/rest/2.0/xpan/file?method=plantcookie&type=stoken&source=pcs"
-	resp, err := GetWithResponse(url, "netdisk;Mo", "BDUSS="+bduss)
+	cookie := "BDUSS=" + bduss + ";PANPSC=;BAIDUID=1;ndut_fmt=" + Getndut()
+	if ptoken != "" {
+		cookie = "BDUSS=" + bduss + ";PTOKEN=" + ptoken + "PANPSC=;BAIDUID=1;ndut_fmt=" + Getndut()
+	}
+	resp, err := GetWithResponse(url, "netdisk;Mo", cookie)
 	if err != nil {
 		log.Printf("GetStoken request failed: %v", err)
 		return ""
 	}
 	defer resp.Body.Close()
+	location := resp.Header.Get("Location")
+	if location != "" && ptoken != "" {
+		log.Printf("GetStoken need verfiy: %v", "需要重新登录")
+		// 尝试重新登录
+		loginUrl := "https://wappass.baidu.com/v3/login/api/auth?notjump=1&return_type=3&tpl=netdisk&u=https%3A%2F%2Fpan.baidu.com%2Frest%2F2.0%2Fxpan%2Ffile%3Fmethod%3Dplantcookie%26source%3Dpcs%26callid%3D0.1%26type%3Dstoken%26from_module%3Dcloud-ui"
+		resp2, err2 := GetWithResponse(loginUrl, "netdisk;Mo", cookie)
+		if err2 != nil {
+			log.Printf("GetStoken request failed: %v", err)
+			return ""
+		}
+		location2 := resp2.Header.Get("Location")
+		if location2 == "" {
+			log.Printf("GetStoken request failed: %v", "BDUSS无效")
+			return ""
+		}
+
+		if !strings.Contains(location2, "&errno=0") && !strings.Contains(location2, "&stoken=") {
+			log.Printf("GetStoken failed: %s", "PTOKEN无效")
+			return ""
+		}
+
+		resp, err = GetWithResponse(location2, "netdisk;Mo", cookie)
+	}
 
 	// 检查 Set-Cookie 响应头
 	cookies := resp.Header.Values("Set-Cookie")
